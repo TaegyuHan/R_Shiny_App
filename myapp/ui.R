@@ -36,10 +36,10 @@ ui <- dashboardPage(
           
           # Preprocessing
           menuItem("Preprocessing", id = "chartsID", tabName = "charts", icon = icon("hammer"),
-                   menuSubItem("Statistics", tabName = "subitem1"),
-                   menuSubItem("Peak", tabName = "subitem2"),
-                   menuSubItem("Change Point", tabName = "subitem2"),
-                   menuSubItem("Spectral Analysis", tabName = "subitem2")
+                   menuSubItem("Statistics", tabName = "Statistics"),
+                   menuSubItem("Peak", tabName = "Peak"),
+                   menuSubItem("Change Point", tabName = "Change Point"),
+                   menuSubItem("Spectral Analysis", tabName = "Spectral Analysis")
           )
       )
       
@@ -133,7 +133,9 @@ ui <- dashboardPage(
                                                          , "rotationRate.z" = "rotationRate.z"
                                                          , "userAcceleration.x" = "userAcceleration.x"
                                                          , "userAcceleration.y" = "userAcceleration.y"
-                                                         , "userAcceleration.z" = "userAcceleration.z" ),
+                                                         , "userAcceleration.z" = "userAcceleration.z"
+                                                         , "maguserAcceleration" = "maguserAcceleration"
+                                                         , "magrotationRate" = "magrotationRate"),
                                            selected = "attitude.roll"),
                                
                                    ),
@@ -152,10 +154,24 @@ ui <- dashboardPage(
                     DT::dataTableOutput('sensorData')
                   ),
               )
-          )
+          ),
           # tabItem Data End
           # --------------------------------------------------------------------------------- #
           
+          
+          # --------------------------------------------------------------------------------- #
+          # tabItem Statistics
+          tabItem(
+              tabName = "Statistics",
+              fluidPage(
+                  
+                
+                
+              )
+          )
+          
+          # tabItem Statistics end
+          # --------------------------------------------------------------------------------- #
       )
   )
   
