@@ -107,9 +107,26 @@ StatisticsBoxGraphColList <- list(  "attitude.roll_mean" = "attitude.roll_mean"
                                     , "userAcceleration.z_skewness" = "userAcceleration.z_skewness"
                                     , "maguserAcceleration_skewness" = "maguserAcceleration_skewness")
 
+
 PeakBoxGraphColList <- list( "f_n", "p_interval", "p_interval_std", 
                              "p_mean", "p_max", "p_min", 
                              "p_std", "cfR", "cfA" )
+
+ChangePointPeakBoxGraphColList <- list(  "cp_magrotationRate_mean"
+                                       , "cp_maguserAcceleration_mean"
+                                       , "cp_magrotationRate_var"
+                                       , "cp_maguserAcceleration_var"
+                                       , "cp_magrotationRate_meanvar"
+                                       , "cp_maguserAcceleration_meanvar")
+
+
+
+SpectralAnalysisBoxGraphColList <- list(   "V2", "V3", 
+                                          "V4", "V5", "V6", 
+                                          "V7", "V8", "V9", 
+                                          "V10", "V11" )
+
+
 
 ui <- dashboardPage(
   
@@ -139,8 +156,8 @@ ui <- dashboardPage(
           menuItem("Preprocessing", id = "chartsID", tabName = "charts", icon = icon("hammer"),
                    menuSubItem("Statistics", tabName = "Statistics"),
                    menuSubItem("Peak", tabName = "Peak"),
-                   menuSubItem("Change Point", tabName = "Change Point"),
-                   menuSubItem("Spectral Analysis", tabName = "Spectral Analysis")
+                   menuSubItem("Change Point", tabName = "Change_Point"),
+                   menuSubItem("Spectral Analysis", tabName = "Spectral_Analysis")
           )
       )
       
@@ -284,20 +301,84 @@ ui <- dashboardPage(
           
           
           # --------------------------------------------------------------------------------- #
-          # tabItem Peak
+          # tabItem Change Point
           tabItem(
-            tabName = "Change Point",
+            tabName = "Change_Point",
+            titlePanel("Change Point"),
+            fluidPage(
+              fluidRow(
+                column(width = 3,
+                       
+                       selectInput(inputId = "ChangePointFilter_activity",
+                                   label = "Filter Row Activity", 
+                                   choices = activityList, 
+                                   selected = "all"),
+                       
+                       selectInput(inputId = "ChangePointBoxGraphCol",
+                                   label = "시각화 colunm 선택",
+                                   choices = ChangePointPeakBoxGraphColList,
+                                   selected = "attitude.roll"),
+                       
+                       radioButtons(inputId = 'ChangePointShowPlot',
+                                    label = '시각화 선택',
+                                    choices = c('All',
+                                                'Show Scatter',
+                                                'Show Box'),
+                                    selected = 'All'),
+                ),
+                column(width = 7,
+                       fluidRow(
+                         plotOutput(outputId = 'ChangePointBoxGraph', width = '945px')
+                       )
+                )
+              ),
+              fluidRow(
+                DT::dataTableOutput('ChangePointData')
+              ),
+            )
           ),
-          # tabItem Peak End
+          # tabItem Change Point End
           # --------------------------------------------------------------------------------- #
           
           
           # --------------------------------------------------------------------------------- #
-          # tabItem Peak
+          # tabItem SpectralAnalysis
           tabItem(
-            tabName = "Spectral Analysis",
+            tabName = "Spectral_Analysis",
+            titlePanel("Spectral Analysis"),
+            fluidPage(
+              fluidRow(
+                column(width = 3,
+                       
+                       selectInput(inputId = "SpectralAnalysisFilter_activity",
+                                   label = "Filter Row Activity", 
+                                   choices = activityList, 
+                                   selected = "all"),
+                       
+                       selectInput(inputId = "SpectralAnalysisBoxGraphCol",
+                                   label = "시각화 colunm 선택",
+                                   choices = SpectralAnalysisBoxGraphColList,
+                                   selected = "attitude.roll"),
+                       
+                       radioButtons(inputId = 'SpectralAnalysisShowPlot',
+                                    label = '시각화 선택',
+                                    choices = c('All',
+                                                'Show Scatter',
+                                                'Show Box'),
+                                    selected = 'All'),
+                ),
+                column(width = 7,
+                       fluidRow(
+                         plotOutput(outputId = 'SpectralAnalysisBoxGraph', width = '945px')
+                       )
+                )
+              ),
+              fluidRow(
+                DT::dataTableOutput('SpectralAnalysisData')
+              ),
+            )
           )
-          # tabItem Peak End
+          # tabItem SpectralAnalysis End
           # --------------------------------------------------------------------------------- #
 
       )
