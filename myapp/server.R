@@ -54,9 +54,79 @@ server <- function(input, output) {
   # --------------------------------------------------------------------------------- #
   # tabItem Statistics 
     
-  output$StatisticsData = DT::renderDataTable( { StatisticsData %>% filter(exp_no == input$exp_no) },
-                                               options = list(autoWidth = TRUE,
-                                                              scrollX = TRUE))
+  output$StatisticsData = DT::renderDataTable({
+    
+      if(input$activity == "all") {
+        StatisticsData
+      } else {
+        StatisticsData %>% filter(activity == input$activity)  
+      }
+    
+  },
+      options = list(autoWidth = TRUE,
+      scrollX = TRUE))
+  
+  
+  output$StatisticsBoxGraph <- renderPlot({
+    
+    StatisticsDataColorList <- c("#F9D541", "#605CA8", "#605CA8", "#605CA8", "#605CA8", "#605CA8")
+    
+    if(input$activity == "all"){
+      StatisticsDataColorList[1:6] = "#F9D541"
+    }
+    else if (input$activity == 'dws') {
+      StatisticsDataColorList[1:6] = "#605CA8"
+      StatisticsDataColorList[1] = "#F9D541"
+    } 
+    else if (input$activity == 'jog') {
+      StatisticsDataColorList[1:6] = "#605CA8"
+      StatisticsDataColorList[2] = "#F9D541"
+    } 
+    else if (input$activity == 'sit') {
+      StatisticsDataColorList[1:6] = "#605CA8"
+      StatisticsDataColorList[3] = "#F9D541"
+    } 
+    else if (input$activity == 'std') {
+      StatisticsDataColorList[1:6] = "#605CA8"
+      StatisticsDataColorList[4] = "#F9D541"
+    } 
+    else if (input$activity == 'ups') {
+      StatisticsDataColorList[1:6] = "#605CA8"
+      StatisticsDataColorList[5] = "#F9D541"
+    } 
+    else if (input$activity == 'wlk') {
+      StatisticsDataColorList[1:6] = "#605CA8"
+      StatisticsDataColorList[6] = "#F9D541"
+    }
+    
+    
+    if(input$StatisticsShowPlot == 'All') {
+      StatisticsData %>% 
+        ggplot() + 
+        theme_minimal() + 
+        geom_boxplot(aes(x=activity , y=get(input$StatisticsBoxGraphCol), fill=activity)) +
+        geom_point(aes(x=activity , y=get(input$StatisticsBoxGraphCol), colour=activity)) + 
+        scale_fill_manual(values=StatisticsDataColorList) + 
+        scale_color_manual(values=StatisticsDataColorList)
+    }
+    else if(input$StatisticsShowPlot == 'Show Scatter') {
+      StatisticsData %>% 
+        ggplot() + 
+        theme_minimal() + 
+        geom_point(aes(x=activity , y=get(input$StatisticsBoxGraphCol), colour=activity)) + 
+        scale_color_manual(values=StatisticsDataColorList)
+        
+    }
+    else if(input$StatisticsShowPlot == 'Show Box') {
+      StatisticsData %>% 
+        ggplot() + 
+        theme_minimal() + 
+        geom_boxplot(aes(x=activity , y=get(input$StatisticsBoxGraphCol), fill=activity)) +
+        scale_fill_manual(values=StatisticsDataColorList)
+        
+    }
+    
+  })
   
   # tabItem Statistics End
   # --------------------------------------------------------------------------------- #

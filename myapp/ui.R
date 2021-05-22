@@ -63,7 +63,7 @@ ui <- dashboardPage(
                     column(
                            width = 3,
                            selectInput(inputId = "state",
-                                       label = h5("데이터 상태"), 
+                                       label = "데이터 범주",
                                        choices = list(  'dws_1' = 'dws_1'
                                                       , 'dws_11' = 'dws_11'
                                                       , 'dws_2' = 'dws_2'
@@ -82,7 +82,7 @@ ui <- dashboardPage(
                                        selected = "dws_1"),
                            
                            selectInput(inputId = "experimenter",
-                                       label = h5("실험자"), 
+                                       label = "실험자", 
                                        choices = list(  'sub_1' = 'sub_1'
                                                       , 'sub_2' = 'sub_2'
                                                       , 'sub_3' = 'sub_3'
@@ -109,44 +109,36 @@ ui <- dashboardPage(
                                                       , 'sub_24' = 'sub_24'), 
                                        selected = "sub_1"),
                            
-                           h5("현재 보여주고 있는 Data"), 
-                           verbatimTextOutput("verb")
+
+                           
+                           selectInput(inputId = "dataGraphCol",
+                                       label = "시각화 colunm 선택",
+                                       choices = list( "attitude.roll" = "attitude.roll"
+                                                       , "attitude.pitch" = "attitude.pitch"
+                                                       , "attitude.yaw" = "attitude.yaw"
+                                                       , "gravity.x" = "gravity.x"
+                                                       , "gravity.y" = "gravity.y"
+                                                       , "gravity.z" = "gravity.z"
+                                                       , "rotationRate.x" = "rotationRate.x"
+                                                       , "rotationRate.y" = "rotationRate.y"
+                                                       , "rotationRate.z" = "rotationRate.z"
+                                                       , "userAcceleration.x" = "userAcceleration.x"
+                                                       , "userAcceleration.y" = "userAcceleration.y"
+                                                       , "userAcceleration.z" = "userAcceleration.z"
+                                                       , "maguserAcceleration" = "maguserAcceleration"
+                                                       , "magrotationRate" = "magrotationRate"),
+                                       selected = "attitude.roll"),
+                           
+                           checkboxInput("somevalue", "Show Point", FALSE),
+                           verbatimTextOutput("value"), 
+                           
+                           verbatimTextOutput("verb"),
                            ),
                            
                     column(width =7,
                            fluidRow(
                                plotOutput(outputId = 'dataLineGraph', width = '945px')
                            ),
-                           fluidRow(
-                             column(
-                               width =5,
-                               selectInput(inputId = "dataGraphCol",
-                                           label = h5("colunm 선택"),
-                                           choices = list( "attitude.roll" = "attitude.roll"
-                                                         , "attitude.pitch" = "attitude.pitch"
-                                                         , "attitude.yaw" = "attitude.yaw"
-                                                         , "gravity.x" = "gravity.x"
-                                                         , "gravity.y" = "gravity.y"
-                                                         , "gravity.z" = "gravity.z"
-                                                         , "rotationRate.x" = "rotationRate.x"
-                                                         , "rotationRate.y" = "rotationRate.y"
-                                                         , "rotationRate.z" = "rotationRate.z"
-                                                         , "userAcceleration.x" = "userAcceleration.x"
-                                                         , "userAcceleration.y" = "userAcceleration.y"
-                                                         , "userAcceleration.z" = "userAcceleration.z"
-                                                         , "maguserAcceleration" = "maguserAcceleration"
-                                                         , "magrotationRate" = "magrotationRate"),
-                                           selected = "attitude.roll"),
-                               
-                                   ),
-                             column(
-                                width =5,
-                                h5("Plot Point 보여주기"),
-                                checkboxInput("somevalue", "Show", FALSE),
-                                verbatimTextOutput("value")
-                                    )
-
-                           )
                       
                   )
                   ),
@@ -164,32 +156,108 @@ ui <- dashboardPage(
           tabItem(
               tabName = "Statistics",
               fluidPage(
+                
+                  titlePanel("Statistics"),
+                
                   fluidRow(
-                      column(width = 3.3,
-                             selectInput(inputId = "exp_no",
-                                         label = h5("Filter"), 
-                                         choices = list(  'dws_1' = '1'
-                                                        , 'dws_11' = '11'
-                                                        , 'dws_2' = '2'
-                                                        , 'jog_16' = '16'
-                                                        , 'jog_9' = '9'
-                                                        , 'sit_13' = '13'
-                                                        , 'sit_5' = '5'
-                                                        , 'std_14' = '14'
-                                                        , 'std_6' = '6'
-                                                        , 'ups_12' = '12'
-                                                        , 'ups_3' = '3'
-                                                        , 'ups_4' = '4'
-                                                        , 'wlk_15' = '15'
-                                                        , 'wlk_7' = '7'
-                                                        , 'wlk_8' = '8'), 
-                                         selected = "dws_1"),
-                             ),
-                      column(width = 3.3,
+                      column(width = 3,
+                             selectInput(inputId = "activity",
+                                         label = "Filter Row", 
+                                         choices = list(  'all' = 'all'
+                                                        , 'dws' = 'dws'
+                                                        , 'jog' = 'jog'
+                                                        , 'sit' = 'sit'
+                                                        , 'std' = 'std'
+                                                        , 'ups' = 'ups'
+                                                        , 'wlk' = 'wlk'), 
+                                         selected = "all"),
                              
+                             selectInput(inputId = "StatisticsBoxGraphCol",
+                                         label = "시각화 colunm 선택",
+                                         choices = list(  "attitude.roll_mean" = "attitude.roll_mean"
+                                                          , "attitude.pitch_mean" = "attitude.pitch_mean"
+                                                          , "attitude.yaw_mean" = "attitude.yaw_mean"
+                                                          , "gravity.x_mean" = "gravity.x_mean"
+                                                          , "gravity.y_mean" = "gravity.y_mean"
+                                                          , "gravity.z_mean" = "gravity.z_mean"
+                                                          , "rotationRate.x_mean" = "rotationRate.x_mean"
+                                                          , "rotationRate.y_mean" = "rotationRate.y_mean"
+                                                          , "rotationRate.z_mean" = "rotationRate.z_mean"
+                                                          , "userAcceleration.x_mean" = "userAcceleration.x_mean"
+                                                          , "userAcceleration.y_mean" = "userAcceleration.y_mean"
+                                                          , "userAcceleration.z_mean" = "userAcceleration.z_mean"
+                                                          , "maguserAcceleration_mean"  = "maguserAcceleration_mean" 
+                                                          , "magrotationRate_mean"  = "magrotationRate_mean" 
+                                                          , "attitude.roll_min" = "attitude.roll_min"
+                                                          , "attitude.pitch_min" = "attitude.pitch_min"
+                                                          , "attitude.yaw_min" = "attitude.yaw_min"
+                                                          , "gravity.x_min" = "gravity.x_min"
+                                                          , "gravity.y_min" = "gravity.y_min"
+                                                          , "gravity.z_min" = "gravity.z_min"
+                                                          , "rotationRate.x_min" = "rotationRate.x_min"
+                                                          , "rotationRate.y_min" = "rotationRate.y_min"
+                                                          , "rotationRate.z_min" = "rotationRate.z_min"
+                                                          , "userAcceleration.x_min" = "userAcceleration.x_min"
+                                                          , "userAcceleration.y_min" = "userAcceleration.y_min"
+                                                          , "userAcceleration.z_min" = "userAcceleration.z_min"
+                                                          , "maguserAcceleration_min"  = "maguserAcceleration_min" 
+                                                          , "magrotationRate_min"  = "magrotationRate_min" 
+                                                          , "attitude.roll_max" = "attitude.roll_max"
+                                                          , "attitude.pitch_max" = "attitude.pitch_max"
+                                                          , "attitude.yaw_max" = "attitude.yaw_max"
+                                                          , "gravity.x_max" = "gravity.x_max"
+                                                          , "gravity.y_max" = "gravity.y_max"
+                                                          , "gravity.z_max" = "gravity.z_max"
+                                                          , "rotationRate.x_max" = "rotationRate.x_max"
+                                                          , "rotationRate.y_max" = "rotationRate.y_max"
+                                                          , "rotationRate.z_max" = "rotationRate.z_max"
+                                                          , "userAcceleration.x_max" = "userAcceleration.x_max"
+                                                          , "userAcceleration.y_max" = "userAcceleration.y_max"
+                                                          , "userAcceleration.z_max" = "userAcceleration.z_max"
+                                                          , "maguserAcceleration_max"  = "maguserAcceleration_max" 
+                                                          , "magrotationRate_max"  = "magrotationRate_max" 
+                                                          , "attitude.roll_sd" = "attitude.roll_sd"
+                                                          , "attitude.pitch_sd" = "attitude.pitch_sd"
+                                                          , "attitude.yaw_sd" = "attitude.yaw_sd"
+                                                          , "gravity.x_sd" = "gravity.x_sd"
+                                                          , "gravity.y_sd" = "gravity.y_sd"
+                                                          , "gravity.z_sd" = "gravity.z_sd"
+                                                          , "rotationRate.x_sd" = "rotationRate.x_sd"
+                                                          , "rotationRate.y_sd" = "rotationRate.y_sd"
+                                                          , "rotationRate.z_sd" = "rotationRate.z_sd"
+                                                          , "userAcceleration.x_sd" = "userAcceleration.x_sd"
+                                                          , "userAcceleration.y_sd" = "userAcceleration.y_sd"
+                                                          , "userAcceleration.z_sd" = "userAcceleration.z_sd"
+                                                          , "maguserAcceleration_sd"  = "maguserAcceleration_sd" 
+                                                          , "magrotationRate_sd"  = "magrotationRate_sd" 
+                                                          , "attitude.roll_skewness" = "attitude.roll_skewness"
+                                                          , "attitude.pitch_skewness" = "attitude.pitch_skewness"
+                                                          , "attitude.yaw_skewness" = "attitude.yaw_skewness"
+                                                          , "gravity.x_skewness" = "gravity.x_skewness"
+                                                          , "gravity.y_skewness" = "gravity.y_skewness"
+                                                          , "gravity.z_skewness" = "gravity.z_skewness"
+                                                          , "rotationRate.x_skewness" = "rotationRate.x_skewness"
+                                                          , "rotationRate.y_skewness" = "rotationRate.y_skewness"
+                                                          , "rotationRate.z_skewness" = "rotationRate.z_skewness"
+                                                          , "userAcceleration.x_skewness" = "userAcceleration.x_skewness"
+                                                          , "userAcceleration.y_skewness" = "userAcceleration.y_skewness"
+                                                          , "userAcceleration.z_skewness" = "userAcceleration.z_skewness"
+                                                          , "maguserAcceleration_skewness" = "maguserAcceleration_skewness"),
+                                         selected = "attitude.roll"),
+                             
+                             radioButtons(inputId = 'StatisticsShowPlot',
+                                          label = '시각화 선택',
+                                          choices = c('All',
+                                                      'Show Scatter',
+                                                      'Show Box'),
+                                          selected = 'All'),
+
                              ),
-                      column(width = 3.3
-                             )
+                      column(width = 7,
+                          fluidRow(
+                                plotOutput(outputId = 'StatisticsBoxGraph', width = '945px')
+                          )
+                      ),
                   ),
                   fluidRow(
                     DT::dataTableOutput('StatisticsData')
