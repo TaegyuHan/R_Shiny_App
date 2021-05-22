@@ -164,9 +164,36 @@ ui <- dashboardPage(
           tabItem(
               tabName = "Statistics",
               fluidPage(
-                  
-                
-                
+                  fluidRow(
+                      column(width = 3.3,
+                             selectInput(inputId = "exp_no",
+                                         label = h5("Filter"), 
+                                         choices = list(  'dws_1' = '1'
+                                                        , 'dws_11' = '11'
+                                                        , 'dws_2' = '2'
+                                                        , 'jog_16' = '16'
+                                                        , 'jog_9' = '9'
+                                                        , 'sit_13' = '13'
+                                                        , 'sit_5' = '5'
+                                                        , 'std_14' = '14'
+                                                        , 'std_6' = '6'
+                                                        , 'ups_12' = '12'
+                                                        , 'ups_3' = '3'
+                                                        , 'ups_4' = '4'
+                                                        , 'wlk_15' = '15'
+                                                        , 'wlk_7' = '7'
+                                                        , 'wlk_8' = '8'), 
+                                         selected = "dws_1"),
+                             ),
+                      column(width = 3.3,
+                             
+                             ),
+                      column(width = 3.3
+                             )
+                  ),
+                  fluidRow(
+                    DT::dataTableOutput('StatisticsData')
+                  ),
               )
           )
           

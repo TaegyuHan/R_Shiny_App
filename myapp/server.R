@@ -54,8 +54,10 @@ server <- function(input, output) {
   # --------------------------------------------------------------------------------- #
   # tabItem Statistics 
     
-    
-    
+  output$StatisticsData = DT::renderDataTable( { StatisticsData %>% filter(exp_no == input$exp_no) },
+                                               options = list(autoWidth = TRUE,
+                                                              scrollX = TRUE))
+  
   # tabItem Statistics End
   # --------------------------------------------------------------------------------- #
 
