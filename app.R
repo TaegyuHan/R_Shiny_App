@@ -20,6 +20,8 @@ library(shiny)
 library(shinydashboard)
 library(tidyverse)
 library(DT)
+library(pracma)
+library(seewave)
 #------------------------------------------------------------------#
 
 

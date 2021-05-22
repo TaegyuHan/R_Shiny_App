@@ -8,13 +8,6 @@
 
 
 
-#------------------------------------------------------------------#
-# Data Read
-
-#------------------------------------------------------------------#
-
-
-
 
 server <- function(input, output) {
   
@@ -56,10 +49,10 @@ server <- function(input, output) {
     
   output$StatisticsData = DT::renderDataTable({
     
-      if(input$activity == "all") {
+      if(input$StatisticsFilter_activity == "all") {
         StatisticsData
       } else {
-        StatisticsData %>% filter(activity == input$activity)  
+        StatisticsData %>% filter(activity == input$StatisticsFilter_activity)  
       }
     
   },
@@ -69,34 +62,34 @@ server <- function(input, output) {
   
   output$StatisticsBoxGraph <- renderPlot({
     
-    StatisticsDataColorList <- c("#F9D541", "#605CA8", "#605CA8", "#605CA8", "#605CA8", "#605CA8")
+    DataColorList <- c("#F9D541", "#605CA8", "#605CA8", "#605CA8", "#605CA8", "#605CA8")
     
-    if(input$activity == "all"){
-      StatisticsDataColorList[1:6] = "#F9D541"
+    if(input$StatisticsFilter_activity == "all"){
+      DataColorList[1:6] = "#F9D541"
     }
-    else if (input$activity == 'dws') {
-      StatisticsDataColorList[1:6] = "#605CA8"
-      StatisticsDataColorList[1] = "#F9D541"
+    else if (input$StatisticsFilter_activity == 'dws') {
+      DataColorList[1:6] = "#605CA8"
+      DataColorList[1] = "#F9D541"
     } 
-    else if (input$activity == 'jog') {
-      StatisticsDataColorList[1:6] = "#605CA8"
-      StatisticsDataColorList[2] = "#F9D541"
+    else if (input$StatisticsFilter_activity == 'jog') {
+      DataColorList[1:6] = "#605CA8"
+      DataColorList[2] = "#F9D541"
     } 
-    else if (input$activity == 'sit') {
-      StatisticsDataColorList[1:6] = "#605CA8"
-      StatisticsDataColorList[3] = "#F9D541"
+    else if (input$StatisticsFilter_activity == 'sit') {
+      DataColorList[1:6] = "#605CA8"
+      DataColorList[3] = "#F9D541"
     } 
-    else if (input$activity == 'std') {
-      StatisticsDataColorList[1:6] = "#605CA8"
-      StatisticsDataColorList[4] = "#F9D541"
+    else if (input$StatisticsFilter_activity == 'std') {
+      DataColorList[1:6] = "#605CA8"
+      DataColorList[4] = "#F9D541"
     } 
-    else if (input$activity == 'ups') {
-      StatisticsDataColorList[1:6] = "#605CA8"
-      StatisticsDataColorList[5] = "#F9D541"
+    else if (input$StatisticsFilter_activity == 'ups') {
+      DataColorList[1:6] = "#605CA8"
+      DataColorList[5] = "#F9D541"
     } 
-    else if (input$activity == 'wlk') {
-      StatisticsDataColorList[1:6] = "#605CA8"
-      StatisticsDataColorList[6] = "#F9D541"
+    else if (input$StatisticsFilter_activity == 'wlk') {
+      DataColorList[1:6] = "#605CA8"
+      DataColorList[6] = "#F9D541"
     }
     
     
@@ -106,15 +99,15 @@ server <- function(input, output) {
         theme_minimal() + 
         geom_boxplot(aes(x=activity , y=get(input$StatisticsBoxGraphCol), fill=activity)) +
         geom_point(aes(x=activity , y=get(input$StatisticsBoxGraphCol), colour=activity)) + 
-        scale_fill_manual(values=StatisticsDataColorList) + 
-        scale_color_manual(values=StatisticsDataColorList)
+        scale_fill_manual(values=DataColorList) + 
+        scale_color_manual(values=DataColorList)
     }
     else if(input$StatisticsShowPlot == 'Show Scatter') {
       StatisticsData %>% 
         ggplot() + 
         theme_minimal() + 
         geom_point(aes(x=activity , y=get(input$StatisticsBoxGraphCol), colour=activity)) + 
-        scale_color_manual(values=StatisticsDataColorList)
+        scale_color_manual(values=DataColorList)
         
     }
     else if(input$StatisticsShowPlot == 'Show Box') {
@@ -122,7 +115,7 @@ server <- function(input, output) {
         ggplot() + 
         theme_minimal() + 
         geom_boxplot(aes(x=activity , y=get(input$StatisticsBoxGraphCol), fill=activity)) +
-        scale_fill_manual(values=StatisticsDataColorList)
+        scale_fill_manual(values=DataColorList)
         
     }
     
@@ -130,5 +123,90 @@ server <- function(input, output) {
   
   # tabItem Statistics End
   # --------------------------------------------------------------------------------- #
+  
+  
+  # --------------------------------------------------------------------------------- #
+  # tabItem Peak
+  output$PeakData = DT::renderDataTable( {  
+    
+    if(input$PeakFilter_activity == "all") {
+      PeakData
+    } else {
+      PeakData %>% filter(activity == input$PeakFilter_activity)
+    }
+    
+  },
+  options = list(autoWidth = TRUE, scrollX = TRUE))
+  
+  
+  
+  output$PeakBoxGraph <- renderPlot({
+    
+    DataColorList <- c("#F9D541", "#605CA8", "#605CA8", "#605CA8", "#605CA8", "#605CA8")
+    
+    if(input$PeakFilter_activity == "all"){
+      DataColorList[1:6] = "#F9D541"
+    }
+    else if (input$PeakFilter_activity == 'dws') {
+      DataColorList[1:6] = "#605CA8"
+      DataColorList[1] = "#F9D541"
+    } 
+    else if (input$PeakFilter_activity == 'jog') {
+      DataColorList[1:6] = "#605CA8"
+      DataColorList[2] = "#F9D541"
+    } 
+    else if (input$PeakFilter_activity == 'sit') {
+      DataColorList[1:6] = "#605CA8"
+      DataColorList[3] = "#F9D541"
+    } 
+    else if (input$PeakFilter_activity == 'std') {
+      DataColorList[1:6] = "#605CA8"
+      DataColorList[4] = "#F9D541"
+    } 
+    else if (input$PeakFilter_activity == 'ups') {
+      DataColorList[1:6] = "#605CA8"
+      DataColorList[5] = "#F9D541"
+    } 
+    else if (input$PeakFilter_activity == 'wlk') {
+      DataColorList[1:6] = "#605CA8"
+      DataColorList[6] = "#F9D541"
+    }
+    
+    
+    if(input$PeakShowPlot == 'All') {
+      PeakData %>% 
+        ggplot() + 
+        theme_minimal() + 
+        geom_boxplot(aes(x=activity , y=get(input$PeakBoxGraphCol), fill=activity)) +
+        geom_point(aes(x=activity , y=get(input$PeakBoxGraphCol), colour=activity)) + 
+        scale_fill_manual(values=DataColorList) + 
+        scale_color_manual(values=DataColorList)
+    }
+    else if(input$PeakShowPlot == 'Show Scatter') {
+      PeakData %>% 
+        ggplot() + 
+        theme_minimal() + 
+        geom_point(aes(x=activity , y=get(input$PeakBoxGraphCol), colour=activity)) + 
+        scale_color_manual(values=DataColorList)
+      
+    }
+    else if(input$PeakShowPlot == 'Show Box') {
+      PeakData %>% 
+        ggplot() + 
+        theme_minimal() + 
+        geom_boxplot(aes(x=activity , y=get(input$PeakBoxGraphCol), fill=activity)) +
+        scale_fill_manual(values=DataColorList)
+      
+    }
+    
+  })
+  
+  
+  # tabItem Peak End
+  # --------------------------------------------------------------------------------- #
+  
+  
+  
+  
 
 }
