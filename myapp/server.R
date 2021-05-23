@@ -1,9 +1,102 @@
 #------------------------------------------------------------------#
 # 
-# ???천향 ????????? 비정???????????? 과제
-# 빅데?????? 공학??? 20171483 ?????????
-# Shiny App 개발??????
+# 순천향 대학교 비정형데이터 과제
+# 빅데이터 공학과 20171483 한태규
+# Shiny App 개발하기
 # 
+#------------------------------------------------------------------#
+
+
+
+
+#------------------------------------------------------------------#
+# 시각화 함수
+
+ShowGraph <- function(data, filter, showPlot, showCol)
+{
+  
+    DataColorList <- c("#F9D541", "#605CA8", "#605CA8",
+                       "#605CA8", "#605CA8", "#605CA8")
+    
+    if (filter == "all") {
+        DataColorList[1:6] = "#F9D541"
+    }
+    else if (filter == 'dws') {
+        DataColorList[1:6] = "#605CA8"
+        DataColorList[1] = "#F9D541"
+    } 
+    else if (filter == 'jog') {
+        DataColorList[1:6] = "#605CA8"
+        DataColorList[2] = "#F9D541"
+    } 
+    else if (filter == 'sit') {
+        DataColorList[1:6] = "#605CA8"
+        DataColorList[3] = "#F9D541"
+    } 
+    else if (filter == 'std') {
+        DataColorList[1:6] = "#605CA8"
+        DataColorList[4] = "#F9D541"
+    } 
+    else if (filter == 'ups') {
+        DataColorList[1:6] = "#605CA8"
+        DataColorList[5] = "#F9D541"
+    } 
+    else if (filter == 'wlk') {
+        DataColorList[1:6] = "#605CA8"
+        DataColorList[6] = "#F9D541"
+    }
+    
+    
+    if(showPlot == 'All') {
+        showPlot <- data %>% 
+            ggplot() + 
+            theme_minimal() + 
+            geom_boxplot(aes(x=activity , y=get(showCol), fill=activity)) +
+            geom_point(aes(x=activity , y=get(showCol), colour=activity)) + 
+            scale_fill_manual(values=DataColorList) + 
+            scale_color_manual(values=DataColorList) + 
+            theme(axis.text.y=element_blank())
+    }
+    else if(showPlot == 'Show Scatter') {
+        showPlot <- data %>% 
+            ggplot() + 
+            theme_minimal() + 
+            geom_point(aes(x=activity , y=get(showCol), colour=activity)) + 
+            scale_color_manual(values=DataColorList) + 
+            theme(axis.text.y=element_blank())
+    }
+    else if(showPlot == 'Show Box') {
+        showPlot <- data %>% 
+            ggplot() + 
+            theme_minimal() + 
+            geom_boxplot(aes(x=activity , y=get(showCol), fill=activity)) +
+            scale_fill_manual(values=DataColorList) + 
+            theme(axis.text.y=element_blank())
+    }
+    
+    return(showPlot)
+}
+#------------------------------------------------------------------#
+
+
+
+
+#------------------------------------------------------------------#
+# model
+showModel <- function(data)
+{
+  
+    RF <- make_Weka_classifier("weka/classifiers/trees/RandomForest")
+    
+    m <- RF(as.factor(activity)~., data)
+    
+    e <- evaluate_Weka_classifier( m
+                                   , numFolds = 10
+                                   , complexity = TRUE
+                                   , class = TRUE )
+    
+    return(e)
+}
 #------------------------------------------------------------------#
 
 
@@ -11,462 +104,214 @@
 
 server <- function(input, output) {
   
-  # --------------------------------------------------------------------------------- #
-  # tabItem Data
   
-  output$verb <- renderText({ paste0(input$state,"/",input$experimenter,".csv") })
-
-  # Data ?????????
-  output$sensorData = DT::renderDataTable( { get(paste0(input$state,"/",input$experimenter,".csv")) },
-                                           options = list(autoWidth = TRUE,
-                                                          scrollX = TRUE))
+    # --------------------------------------------------------------------------------- #
+    # tabItem Data
+    
+    output$verb <- renderText({ paste0(input$state,"/",input$experimenter,".csv") })
+    
+    
+    # Data ?????????
+    output$sensorData = DT::renderDataTable({
+        get(paste0(input$state,"/",input$experimenter,".csv"))
+    },
+    options = list(autoWidth = TRUE,scrollX = TRUE))
+    
+  
     output$dataLineGraph <- renderPlot({
-      if (input$somevalue) {
-        ggplot(get(paste0(input$state,"/",input$experimenter,".csv")),
-               aes(x = X, y = get(input$dataGraphCol) )) + 
-          geom_line(color="#605CA8", size = 1) +
-          geom_point(color="#EFE909", size = 1.3) +
-          theme_minimal() +
-          xlab("Time") +
-          ylab(input$dataGraphCol)
-      }
-      else { # Point 그래프 같이 보이기
-        ggplot(get(paste0(input$state,"/",input$experimenter,".csv")),
-               aes(x = X, y = get(input$dataGraphCol) )) + 
-          geom_line(color="#605CA8", size = 1) +
-          theme_minimal() +
-          xlab("Time") +
-          ylab(input$dataGraphCol)
-      }
+      
+        if (input$somevalue) {
+            ggplot(get(paste0(input$state,"/",input$experimenter,".csv")),
+                   aes(x = X, y = get(input$dataGraphCol) )) + 
+                geom_line(color="#605CA8", size = 1) +
+                geom_point(color="#EFE909", size = 1.3) +
+                theme_minimal() +
+                xlab("Time") +
+                ylab(input$dataGraphCol)
+        }
+        else { # Point 그래프 같이 보이기
+            ggplot(get(paste0(input$state,"/",input$experimenter,".csv")),
+                   aes(x = X, y = get(input$dataGraphCol) )) + 
+              geom_line(color="#605CA8", size = 1) +
+              theme_minimal() +
+              xlab("Time") +
+              ylab(input$dataGraphCol)
+        }
     })
-  # tabItem Data End
-  # --------------------------------------------------------------------------------- #  
+    
+    # tabItem Data End
+    # --------------------------------------------------------------------------------- #  
+      
     
     
+    # --------------------------------------------------------------------------------- #
+    # tabItem Statistics 
+      
+    output$StatisticsData = DT::renderDataTable({
+      
+        if(input$StatisticsFilter_activity == "all") {
+            StatisticsData
+        } else {
+            StatisticsData %>% filter(activity == input$StatisticsFilter_activity)  
+        }
+      
+    },
+    options = list(autoWidth = TRUE,scrollX = TRUE))
     
-  # --------------------------------------------------------------------------------- #
-  # tabItem Statistics 
+    output$StatisticsBoxGraph <- renderPlot({
+      
+        ShowGraph(data = StatisticsData,
+                  filter = input$StatisticsFilter_activity,
+                  showPlot = input$StatisticsShowPlot,
+                  showCol = input$StatisticsBoxGraphCol)
+      
+    })
     
-  output$StatisticsData = DT::renderDataTable({
-    
-      if(input$StatisticsFilter_activity == "all") {
-        StatisticsData
-      } else {
-        StatisticsData %>% filter(activity == input$StatisticsFilter_activity)  
-      }
-    
-  },
-      options = list(autoWidth = TRUE,
-      scrollX = TRUE))
+    # tabItem Statistics End
+    # --------------------------------------------------------------------------------- #
   
-  
-  output$StatisticsBoxGraph <- renderPlot({
     
-    DataColorList <- c("#F9D541", "#605CA8", "#605CA8", "#605CA8", "#605CA8", "#605CA8")
+    # --------------------------------------------------------------------------------- #
+    # tabItem Peak
     
-    if(input$StatisticsFilter_activity == "all"){
-      DataColorList[1:6] = "#F9D541"
-    }
-    else if (input$StatisticsFilter_activity == 'dws') {
-      DataColorList[1:6] = "#605CA8"
-      DataColorList[1] = "#F9D541"
-    } 
-    else if (input$StatisticsFilter_activity == 'jog') {
-      DataColorList[1:6] = "#605CA8"
-      DataColorList[2] = "#F9D541"
-    } 
-    else if (input$StatisticsFilter_activity == 'sit') {
-      DataColorList[1:6] = "#605CA8"
-      DataColorList[3] = "#F9D541"
-    } 
-    else if (input$StatisticsFilter_activity == 'std') {
-      DataColorList[1:6] = "#605CA8"
-      DataColorList[4] = "#F9D541"
-    } 
-    else if (input$StatisticsFilter_activity == 'ups') {
-      DataColorList[1:6] = "#605CA8"
-      DataColorList[5] = "#F9D541"
-    } 
-    else if (input$StatisticsFilter_activity == 'wlk') {
-      DataColorList[1:6] = "#605CA8"
-      DataColorList[6] = "#F9D541"
-    }
-    
-    
-    if(input$StatisticsShowPlot == 'All') {
-      StatisticsData %>% 
-        ggplot() + 
-        theme_minimal() + 
-        geom_boxplot(aes(x=activity , y=get(input$StatisticsBoxGraphCol), fill=activity)) +
-        geom_point(aes(x=activity , y=get(input$StatisticsBoxGraphCol), colour=activity)) + 
-        scale_fill_manual(values=DataColorList) + 
-        scale_color_manual(values=DataColorList)
-    }
-    else if(input$StatisticsShowPlot == 'Show Scatter') {
-      StatisticsData %>% 
-        ggplot() + 
-        theme_minimal() + 
-        geom_point(aes(x=activity , y=get(input$StatisticsBoxGraphCol), colour=activity)) + 
-        scale_color_manual(values=DataColorList)
+    output$PeakData = DT::renderDataTable( {  
+      
+        if(input$PeakFilter_activity == "all") {
+            PeakData
+        } else {
+            PeakData %>% filter(activity == input$PeakFilter_activity)
+        }
         
-    }
-    else if(input$StatisticsShowPlot == 'Show Box') {
-      StatisticsData %>% 
-        ggplot() + 
-        theme_minimal() + 
-        geom_boxplot(aes(x=activity , y=get(input$StatisticsBoxGraphCol), fill=activity)) +
-        scale_fill_manual(values=DataColorList)
+    },
+    options = list(autoWidth = TRUE, scrollX = TRUE))
+    
+    
+    
+    output$PeakBoxGraph <- renderPlot({
+      
+      ShowGraph(data = PeakData,
+                filter = input$PeakFilter_activity,
+                showPlot = input$PeakShowPlot,
+                showCol = input$PeakBoxGraphCol)
+      
+    })
+    
+    # tabItem Peak End
+    # --------------------------------------------------------------------------------- #
+  
+  
+    # --------------------------------------------------------------------------------- #
+    # tabItem Change Point
+    
+    output$ChangePointData = DT::renderDataTable( {
+  
+        if(input$ChangePointFilter_activity == "all") {
+            ChangePointData
+        } else {
+            ChangePointData %>% filter(activity == input$ChangePointFilter_activity)
+        }
+  
+    },
+    options = list(autoWidth = TRUE, scrollX = TRUE))
+  
+  
+  
+    output$ChangePointBoxGraph <- renderPlot({
+      
+      ShowGraph(data = ChangePointData,
+                filter = input$ChangePointFilter_activity,
+                showPlot = input$ChangePointShowPlot,
+                showCol = input$ChangePointBoxGraphCol)
+  
+    })
+    
+    # tabItem Change Point End
+    # --------------------------------------------------------------------------------- #
+    
+  
+    
+    # --------------------------------------------------------------------------------- #
+    # tabItem SpectralAnalysis
+    
+    output$SpectralAnalysisData = DT::renderDataTable( {
         
-    }
-    
-  })
-  
-  # tabItem Statistics End
-  # --------------------------------------------------------------------------------- #
-  
-  
-  # --------------------------------------------------------------------------------- #
-  # tabItem Peak
-  
-  output$PeakData = DT::renderDataTable( {  
-    
-    if(input$PeakFilter_activity == "all") {
-      PeakData
-    } else {
-      PeakData %>% filter(activity == input$PeakFilter_activity)
-    }
-    
-  },
-  options = list(autoWidth = TRUE, scrollX = TRUE))
-  
-  
-  
-  output$PeakBoxGraph <- renderPlot({
-    
-    DataColorList <- c("#F9D541", "#605CA8", "#605CA8", "#605CA8", "#605CA8", "#605CA8")
-    
-    if(input$PeakFilter_activity == "all"){
-      DataColorList[1:6] = "#F9D541"
-    }
-    else if (input$PeakFilter_activity == 'dws') {
-      DataColorList[1:6] = "#605CA8"
-      DataColorList[1] = "#F9D541"
-    } 
-    else if (input$PeakFilter_activity == 'jog') {
-      DataColorList[1:6] = "#605CA8"
-      DataColorList[2] = "#F9D541"
-    } 
-    else if (input$PeakFilter_activity == 'sit') {
-      DataColorList[1:6] = "#605CA8"
-      DataColorList[3] = "#F9D541"
-    } 
-    else if (input$PeakFilter_activity == 'std') {
-      DataColorList[1:6] = "#605CA8"
-      DataColorList[4] = "#F9D541"
-    } 
-    else if (input$PeakFilter_activity == 'ups') {
-      DataColorList[1:6] = "#605CA8"
-      DataColorList[5] = "#F9D541"
-    } 
-    else if (input$PeakFilter_activity == 'wlk') {
-      DataColorList[1:6] = "#605CA8"
-      DataColorList[6] = "#F9D541"
-    }
-    
-    
-    if(input$PeakShowPlot == 'All') {
-      PeakData %>% 
-        ggplot() + 
-        theme_minimal() + 
-        geom_boxplot(aes(x=activity , y=get(input$PeakBoxGraphCol), fill=activity)) +
-        geom_point(aes(x=activity , y=get(input$PeakBoxGraphCol), colour=activity)) + 
-        scale_fill_manual(values=DataColorList) + 
-        scale_color_manual(values=DataColorList)
-    }
-    else if(input$PeakShowPlot == 'Show Scatter') {
-      PeakData %>% 
-        ggplot() + 
-        theme_minimal() + 
-        geom_point(aes(x=activity , y=get(input$PeakBoxGraphCol), colour=activity)) + 
-        scale_color_manual(values=DataColorList)
+        if(input$SpectralAnalysisFilter_activity == "all") {
+            SpectralAnalysisData
+        } else {
+            SpectralAnalysisData %>% filter(activity == input$SpectralAnalysisFilter_activity)
+        }
       
-    }
-    else if(input$PeakShowPlot == 'Show Box') {
-      PeakData %>% 
-        ggplot() + 
-        theme_minimal() + 
-        geom_boxplot(aes(x=activity , y=get(input$PeakBoxGraphCol), fill=activity)) +
-        scale_fill_manual(values=DataColorList)
-      
-    }
+    },
+    options = list(autoWidth = TRUE, scrollX = TRUE))
     
-  })
-  
-  # tabItem Peak End
-  # --------------------------------------------------------------------------------- #
-  
-  
-  # --------------------------------------------------------------------------------- #
-  # tabItem Change Point
-  
-  output$ChangePointData = DT::renderDataTable( {
+    
+    
+    output$SpectralAnalysisBoxGraph <- renderPlot({
+      
+        ShowGraph(data = SpectralAnalysisData,
+                  filter = input$SpectralAnalysisFilter_activity,
+                  showPlot = input$SpectralAnalysisShowPlot,
+                  showCol = input$SpectralAnalysisBoxGraphCol)
+      
+    })
+    
+    # tabItem SpectralAnalysis End
+    # --------------------------------------------------------------------------------- #
+    
+    
+    # --------------------------------------------------------------------------------- #
+    # model 
 
-    if(input$ChangePointFilter_activity == "all") {
-      ChangePointData
-    } else {
-      ChangePointData %>% filter(activity == input$ChangePointFilter_activity)
-    }
-
-  },
-  options = list(autoWidth = TRUE, scrollX = TRUE))
-
-
-
-  output$ChangePointBoxGraph <- renderPlot({
-
-    DataColorList <- c("#F9D541", "#605CA8", "#605CA8", "#605CA8", "#605CA8", "#605CA8")
-
-    if(input$ChangePointFilter_activity == "all"){
-      DataColorList[1:6] = "#F9D541"
-    }
-    else if (input$ChangePointFilter_activity == 'dws') {
-      DataColorList[1:6] = "#605CA8"
-      DataColorList[1] = "#F9D541"
-    }
-    else if (input$ChangePointFilter_activity == 'jog') {
-      DataColorList[1:6] = "#605CA8"
-      DataColorList[2] = "#F9D541"
-    }
-    else if (input$ChangePointFilter_activity == 'sit') {
-      DataColorList[1:6] = "#605CA8"
-      DataColorList[3] = "#F9D541"
-    }
-    else if (input$ChangePointFilter_activity == 'std') {
-      DataColorList[1:6] = "#605CA8"
-      DataColorList[4] = "#F9D541"
-    }
-    else if (input$ChangePointFilter_activity == 'ups') {
-      DataColorList[1:6] = "#605CA8"
-      DataColorList[5] = "#F9D541"
-    }
-    else if (input$ChangePointFilter_activity == 'wlk') {
-      DataColorList[1:6] = "#605CA8"
-      DataColorList[6] = "#F9D541"
-    }
-
-
-    if(input$ChangePointShowPlot == 'All') {
-      ChangePointData %>%
-        ggplot() +
-        theme_minimal() +
-        geom_boxplot(aes(x=activity , y=get(input$ChangePointBoxGraphCol), fill=activity)) +
-        geom_point(aes(x=activity , y=get(input$ChangePointBoxGraphCol), colour=activity)) +
-        scale_fill_manual(values=DataColorList) +
-        scale_color_manual(values=DataColorList)
-    }
-    else if(input$ChangePointShowPlot == 'Show Scatter') {
-      ChangePointData %>%
-        ggplot() +
-        theme_minimal() +
-        geom_point(aes(x=activity , y=get(input$ChangePointBoxGraphCol), colour=activity)) +
-        scale_color_manual(values=DataColorList)
-
-    }
-    else if(input$ChangePointShowPlot == 'Show Box') {
-      ChangePointData %>%
-        ggplot() +
-        theme_minimal() +
-        geom_boxplot(aes(x=activity , y=get(input$ChangePointBoxGraphCol), fill=activity)) +
-        scale_fill_manual(values=DataColorList)
-
-    }
-
-  })
-  
-  
-  # tabItem Change Point End
-  # --------------------------------------------------------------------------------- #
-  
-  
-  
-  # --------------------------------------------------------------------------------- #
-  # tabItem SpectralAnalysis
-  
-  output$SpectralAnalysisData = DT::renderDataTable( {
+    output$Data = DT::renderDataTable({
     
-    if(input$SpectralAnalysisFilter_activity == "all") {
-      SpectralAnalysisData
-    } else {
-      SpectralAnalysisData %>% filter(activity == input$SpectralAnalysisFilter_activity)
-    }
-    
-  },
-  options = list(autoWidth = TRUE, scrollX = TRUE))
-  
-  
-  
-  output$SpectralAnalysisBoxGraph <- renderPlot({
-    
-    DataColorList <- c("#F9D541", "#605CA8", "#605CA8", "#605CA8", "#605CA8", "#605CA8")
-    
-    if(input$SpectralAnalysisFilter_activity == "all"){
-      DataColorList[1:6] = "#F9D541"
-    }
-    else if (input$SpectralAnalysisFilter_activity == 'dws') {
-      DataColorList[1:6] = "#605CA8"
-      DataColorList[1] = "#F9D541"
-    }
-    else if (input$SpectralAnalysisFilter_activity == 'jog') {
-      DataColorList[1:6] = "#605CA8"
-      DataColorList[2] = "#F9D541"
-    }
-    else if (input$SpectralAnalysisFilter_activity == 'sit') {
-      DataColorList[1:6] = "#605CA8"
-      DataColorList[3] = "#F9D541"
-    }
-    else if (input$SpectralAnalysisFilter_activity == 'std') {
-      DataColorList[1:6] = "#605CA8"
-      DataColorList[4] = "#F9D541"
-    }
-    else if (input$SpectralAnalysisFilter_activity == 'ups') {
-      DataColorList[1:6] = "#605CA8"
-      DataColorList[5] = "#F9D541"
-    }
-    else if (input$SpectralAnalysisFilter_activity == 'wlk') {
-      DataColorList[1:6] = "#605CA8"
-      DataColorList[6] = "#F9D541"
-    }
+        if (input$ChoiceData == "StatisticsData") {
+            StatisticsData
+        }
+        else if (input$ChoiceData == "PeakData") {
+            PeakData
+        }
+        else if (input$ChoiceData == "ChangePointData") {
+            ChangePointData
+        }
+        else if (input$ChoiceData == "SpectralAnalysisData") {
+            SpectralAnalysisData
+        }
+      
+    },
+    options = list(autoWidth = TRUE,
+                   scrollX = TRUE))
     
     
-    if(input$SpectralAnalysisShowPlot == 'All') {
-      SpectralAnalysisData %>%
-        ggplot() +
-        theme_minimal() +
-        geom_boxplot(aes(x=activity , y=get(input$SpectralAnalysisBoxGraphCol), fill=activity)) +
-        geom_point(aes(x=activity , y=get(input$SpectralAnalysisBoxGraphCol), colour=activity)) +
-        scale_fill_manual(values=DataColorList) +
-        scale_color_manual(values=DataColorList) + 
-        theme(axis.text.y=element_blank())
-    }
-    else if(input$SpectralAnalysisShowPlot == 'Show Scatter') {
-      SpectralAnalysisData %>%
-        ggplot() +
-        theme_minimal() +
-        geom_point(aes(x=activity , y=get(input$SpectralAnalysisBoxGraphCol), colour=activity)) +
-        scale_color_manual(values=DataColorList) + 
-        theme(axis.text.y=element_blank())
-      
-    }
-    else if(input$SpectralAnalysisShowPlot == 'Show Box') {
-      SpectralAnalysisData %>%
-        ggplot() +
-        theme_minimal() +
-        geom_boxplot(aes(x=activity , y=get(input$SpectralAnalysisBoxGraphCol), fill=activity)) +
-        scale_fill_manual(values=DataColorList) + 
-        theme(axis.text.y=element_blank())
-      
-    }
     
-  })
-  
-  # tabItem SpectralAnalysis End
-  # --------------------------------------------------------------------------------- #
-  
-  
-  # --------------------------------------------------------------------------------- #
-  # model 
-  
-  
-
-  
-  output$Data = DT::renderDataTable({
-  
-    if (input$ChoiceData == "StatisticsData") {
-      StatisticsData
-    }
-    else if (input$ChoiceData == "PeakData") {
-      PeakData
-    }
-    else if (input$ChoiceData == "ChangePointData") {
-      ChangePointData
-    }
-    else if (input$ChoiceData == "SpectralAnalysisData") {
-      SpectralAnalysisData
-    }
+    output$modelPrint <- renderPrint({ 
+      
+        if (input$ChoiceData == "StatisticsData") {
+          
+            showModel(StatisticsData[,3:73])
     
-  },
-  options = list(autoWidth = TRUE,
-                 scrollX = TRUE))
-  
-  
-  
-  output$modelPrint <- renderPrint({ 
+        }
+        else if (input$ChoiceData == "PeakData") {
+          
+            showModel(cbind(activity = PeakData[,3:3], PeakData[,5:13]))
+          
+        }
+        else if (input$ChoiceData == "ChangePointData") {
+          
+            showModel(cbind(activity = ChangePointData[,3:3], ChangePointData[,5:10]))
+        
+        }
+        else if (input$ChoiceData == "SpectralAnalysisData") {
+            
+            activity_freq <- SpectralAnalysisData %>% select(-exp_no,-id,-V1)
+            
+            for (x in 2:11) {
+                t <- paste0("V",x)
+                activity_freq[[t]] <- as.numeric(activity_freq[[t]])
+            }
+            
+            showModel(activity_freq)
+        }
+    })
     
-    if (input$ChoiceData == "StatisticsData") {
-
-      RF <- make_Weka_classifier("weka/classifiers/trees/RandomForest")
-      
-      m <- RF(as.factor(activity)~., data=StatisticsData[,3:73])
-      
-      e <- evaluate_Weka_classifier( m
-                                     , numFolds = 10
-                                     , complexity = TRUE
-                                     , class = TRUE )
-      
-      e
-    }
-    else if (input$ChoiceData == "PeakData") {
-      
-      RF <- make_Weka_classifier("weka/classifiers/trees/RandomForest")
-      
-      m <- RF(as.factor(activity)~., data=cbind(activity = PeakData[,3:3], PeakData[,5:13]))
-      
-      e <- evaluate_Weka_classifier( m
-                                     , numFolds = 10
-                                     , complexity = TRUE
-                                     , class = TRUE )
-      
-      e
-    }
-    else if (input$ChoiceData == "ChangePointData") {
-      
-      RF <- make_Weka_classifier("weka/classifiers/trees/RandomForest")
-      
-      m <- RF(as.factor(activity)~., data=cbind(activity = ChangePointData[,3:3], ChangePointData[,5:10]))
-      
-      e <- evaluate_Weka_classifier( m
-                                     , numFolds = 10
-                                     , complexity = TRUE
-                                     , class = TRUE )
-      
-      e
-    }
-    else if (input$ChoiceData == "SpectralAnalysisData") {
-      
-      activity_freq <- SpectralAnalysisData %>% select(-exp_no,-id,-V1)
-      
-      for(x in 2:11){
-        t <- paste0("V",x)
-        activity_freq[[t]] <- as.numeric(activity_freq[[t]])
-      }
-      
-      RF <- make_Weka_classifier("weka/classifiers/trees/RandomForest")
-      
-      m <- RF(as.factor(activity)~., data=activity_freq)
-      
-      e <- evaluate_Weka_classifier( m
-                                     , numFolds = 10
-                                     , complexity = TRUE
-                                     , class = TRUE )
-      
-      e
-    }
-    
-  })
-  
-  # --------------------------------------------------------------------------------- #
-  
-  
-  
-
+    # --------------------------------------------------------------------------------- #
 }
