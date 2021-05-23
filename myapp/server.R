@@ -373,5 +373,100 @@ server <- function(input, output) {
   # --------------------------------------------------------------------------------- #
   
   
+  # --------------------------------------------------------------------------------- #
+  # model 
+  
+  
+
+  
+  output$Data = DT::renderDataTable({
+  
+    if (input$ChoiceData == "StatisticsData") {
+      StatisticsData
+    }
+    else if (input$ChoiceData == "PeakData") {
+      PeakData
+    }
+    else if (input$ChoiceData == "ChangePointData") {
+      ChangePointData
+    }
+    else if (input$ChoiceData == "SpectralAnalysisData") {
+      SpectralAnalysisData
+    }
+    
+  },
+  options = list(autoWidth = TRUE,
+                 scrollX = TRUE))
+  
+  
+  
+  output$modelPrint <- renderPrint({ 
+    
+    if (input$ChoiceData == "StatisticsData") {
+
+      RF <- make_Weka_classifier("weka/classifiers/trees/RandomForest")
+      
+      m <- RF(as.factor(activity)~., data=StatisticsData[,3:73])
+      
+      e <- evaluate_Weka_classifier( m
+                                     , numFolds = 10
+                                     , complexity = TRUE
+                                     , class = TRUE )
+      
+      e
+    }
+    else if (input$ChoiceData == "PeakData") {
+      
+      RF <- make_Weka_classifier("weka/classifiers/trees/RandomForest")
+      
+      m <- RF(as.factor(activity)~., data=cbind(activity = PeakData[,3:3], PeakData[,5:13]))
+      
+      e <- evaluate_Weka_classifier( m
+                                     , numFolds = 10
+                                     , complexity = TRUE
+                                     , class = TRUE )
+      
+      e
+    }
+    else if (input$ChoiceData == "ChangePointData") {
+      
+      RF <- make_Weka_classifier("weka/classifiers/trees/RandomForest")
+      
+      m <- RF(as.factor(activity)~., data=cbind(activity = ChangePointData[,3:3], ChangePointData[,5:10]))
+      
+      e <- evaluate_Weka_classifier( m
+                                     , numFolds = 10
+                                     , complexity = TRUE
+                                     , class = TRUE )
+      
+      e
+    }
+    else if (input$ChoiceData == "SpectralAnalysisData") {
+      
+      activity_freq <- SpectralAnalysisData %>% select(-exp_no,-id,-V1)
+      
+      for(x in 2:11){
+        t <- paste0("V",x)
+        activity_freq[[t]] <- as.numeric(activity_freq[[t]])
+      }
+      
+      RF <- make_Weka_classifier("weka/classifiers/trees/RandomForest")
+      
+      m <- RF(as.factor(activity)~., data=activity_freq)
+      
+      e <- evaluate_Weka_classifier( m
+                                     , numFolds = 10
+                                     , complexity = TRUE
+                                     , class = TRUE )
+      
+      e
+    }
+    
+  })
+  
+  # --------------------------------------------------------------------------------- #
+  
+  
+  
 
 }

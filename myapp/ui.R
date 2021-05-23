@@ -126,6 +126,11 @@ SpectralAnalysisBoxGraphColList <- list(   "V2", "V3",
                                           "V7", "V8", "V9", 
                                           "V10", "V11" )
 
+DataChoiceList <- list( "StatisticsData" = "StatisticsData"
+                      , "PeakData" = "PeakData"
+                      , "ChangePointData" = "ChangePointData"
+                      , "SpectralAnalysisData" = "SpectralAnalysisData")
+
 
 
 ui <- dashboardPage(
@@ -158,7 +163,10 @@ ui <- dashboardPage(
                    menuSubItem("Peak", tabName = "Peak"),
                    menuSubItem("Change Point", tabName = "Change_Point"),
                    menuSubItem("Spectral Analysis", tabName = "Spectral_Analysis")
-          )
+          ),
+          
+          # model
+          menuItem("Model",tabName = "Model", icon = icon("hammer"))
       )
       
   ),
@@ -196,7 +204,6 @@ ui <- dashboardPage(
                                        selected = "attitude.roll"),
                            
                            checkboxInput("somevalue", "Show Point", FALSE),
-                           verbatimTextOutput("value"), 
                            
                            verbatimTextOutput("verb"),
                            ),
@@ -377,9 +384,38 @@ ui <- dashboardPage(
                 DT::dataTableOutput('SpectralAnalysisData')
               ),
             )
-          )
+          ),
           # tabItem SpectralAnalysis End
           # --------------------------------------------------------------------------------- #
+          
+          # --------------------------------------------------------------------------------- #
+          # model
+          tabItem(
+            tabName = "Model",
+            titlePanel("Model"),
+            fluidPage(
+              fluidRow(
+                column(width = 3,
+                       div(style="margin-top:25px;",
+                       radioButtons(inputId = 'ChoiceData',
+                                    label = 'Data 선택',
+                                    choices = DataChoiceList,
+                                    selected = 'StatisticsData')),
+                       
+                       verbatimTextOutput("value")
+                ),
+                column(width = 7,
+                       h3("RF Model"),
+                       div(style="width:850px;", verbatimTextOutput("modelPrint")),
+                )
+              ),
+              fluidRow(DT::dataTableOutput('Data'))
+
+            )
+          )
+          # --------------------------------------------------------------------------------- #
+          
+
 
       )
   )
