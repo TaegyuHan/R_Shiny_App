@@ -8,13 +8,14 @@
 
 
 
-
 #------------------------------------------------------------------#
-# import library
 # install.packages("shiny")
 # install.packages("shinydashboard")
 # install.packages("tidyverse")
 # install.packages("DT")
+# install.packages("pracma")
+# install.packages("seewave")
+# install.packages("changepoint")
 
 library(shiny)
 library(shinydashboard)
@@ -27,7 +28,7 @@ library(changepoint)
 
 
 #------------------------------------------------------------------#
-# load( "./.RData" )
+load( "./.RData" )
 
 setwd("C:/Users/gksxo/Desktop/순천향대학교/2학년2학기(3학년_4학년수업)/비정형데이터 분석/github/R_Shiny_App")
 
