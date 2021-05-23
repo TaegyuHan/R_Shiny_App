@@ -7,6 +7,10 @@
 #------------------------------------------------------------------#
 
 
+
+#------------------------------------------------------------------#
+# select list
+
 stateList <- list(  'dws_1' = 'dws_1', 'dws_11' = 'dws_11', 'dws_2' = 'dws_2',
                     'jog_16' = 'jog_16', 'jog_9' = 'jog_9', 'sit_13' = 'sit_13',
                     'sit_5' = 'sit_5', 'std_14' = 'std_14', 'std_6' = 'std_6',
@@ -131,295 +135,353 @@ DataChoiceList <- list( "StatisticsData" = "StatisticsData"
                       , "ChangePointData" = "ChangePointData"
                       , "SpectralAnalysisData" = "SpectralAnalysisData")
 
+ShowPlotList <- c('All',
+                  'Show Scatter',
+                  'Show Box')
 
+# select list end
+#------------------------------------------------------------------#
+
+
+
+
+
+#------------------------------------------------------------------#
+# ui
 
 ui <- dashboardPage(
-  
-  
-  
-
-  skin = "purple",
-  
-  
-  
-  
-  
-  dashboardHeader(title = "Shiny App Dev"),
-  
-  
-  
-  
-  
-  dashboardSidebar(
-      
-      sidebarMenu(
-        
-          # Data
-          menuItem("Data", tabName = "data", icon = icon("th")),
-          
-          # Preprocessing
-          menuItem("Preprocessing", id = "chartsID", tabName = "charts", icon = icon("hammer"),
-                   menuSubItem("Statistics", tabName = "Statistics"),
-                   menuSubItem("Peak", tabName = "Peak"),
-                   menuSubItem("Change Point", tabName = "Change_Point"),
-                   menuSubItem("Spectral Analysis", tabName = "Spectral_Analysis")
-          ),
-          
-          # model
-          menuItem("Model",tabName = "Model", icon = icon("hammer"))
-      )
-      
-  ),
-  
-  
-  dashboardBody(
     
-      tabItems(
-        
-          # --------------------------------------------------------------------------------- #
-          # tabItem Data
-          tabItem(
-              tabName = "data",
+    # 스킨
+    skin = "purple",
+    
+    
+    
+    
+    # Header
+    dashboardHeader(title = "Shiny App Dev"),
+    
+    
+    
+    
+    # Sidebar
+    dashboardSidebar(
+      
+        sidebarMenu(
+          
+            # Data
+            menuItem("Data", tabName = "data", icon = icon("th")),
+          
+            # Preprocessing
+            menuItem("Preprocessing", id = "chartsID", tabName = "charts", icon = icon("hammer"),
+                menuSubItem("Statistics", tabName = "Statistics"),
+                menuSubItem("Peak", tabName = "Peak"),
+                menuSubItem("Change Point", tabName = "Change_Point"),
+                menuSubItem("Spectral Analysis", tabName = "Spectral_Analysis")
+            ),
+          
+            # model
+            menuItem("Model",tabName = "Model", icon = icon("hammer"))
+        )
+    ),
+    
+    
+    
+    
+    # Body
+    dashboardBody(
+      
+        tabItems(
+          
+            # --------------------------------------------------------------------------------- #
+            # tabItem Data
+            tabItem(
               
-              fluidPage(
+                tabName = "data",
+              
+                fluidPage(
                 
-                  titlePanel("데이터 확인"),
+                    titlePanel("데이터 확인"),
                 
-                  fluidRow(
-                    column(
-                           width = 3,
-                           selectInput(inputId = "state",
-                                       label = "데이터 범주",
-                                       choices = stateList, 
-                                       selected = "dws_1"),
-                           
-                           selectInput(inputId = "experimenter",
-                                       label = "실험자", 
-                                       choices = experimenterList, 
-                                       selected = "sub_1"),
-
-                           selectInput(inputId = "dataGraphCol",
-                                       label = "시각화 colunm 선택",
-                                       choices = dataGraphColList,
-                                       selected = "attitude.roll"),
-                           
-                           checkboxInput("somevalue", "Show Point", FALSE),
-                           
-                           verbatimTextOutput("verb"),
-                           ),
-                           
-                    column(width =7,
-                           fluidRow(
-                               plotOutput(outputId = 'dataLineGraph', width = '945px')
-                           ),
+                    fluidRow(
                       
-                  )
-                  ),
-                  fluidRow(
-                    DT::dataTableOutput('sensorData')
-                  ),
-              )
-          ),
-          # tabItem Data End
-          # --------------------------------------------------------------------------------- #
+                        column(
+                          
+                            width = 3,
+                            
+                            selectInput(inputId = "state",
+                                        label = "데이터 범주",
+                                        choices = stateList, 
+                                        selected = "dws_1"),
+                           
+                            selectInput(inputId = "experimenter",
+                                        label = "실험자", 
+                                        choices = experimenterList, 
+                                        selected = "sub_1"),
+
+                            selectInput(inputId = "dataGraphCol",
+                                        label = "시각화 colunm 선택",
+                                        choices = dataGraphColList,
+                                        selected = "attitude.roll"),
+                           
+                            checkboxInput("somevalue", "Show Point", FALSE),
+                           
+                            verbatimTextOutput("verb"),
+                        ),
+                           
+                        column(width =7,
+                               
+                           fluidRow(
+                             
+                               plotOutput(outputId = 'dataLineGraph', width = '945px')
+                               
+                            ),
+                        )
+                    ),
+                    
+                    fluidRow(
+                      
+                        DT::dataTableOutput('sensorData')
+                    ),
+                )
+            ),
+            # tabItem Data End
+            # --------------------------------------------------------------------------------- #
           
           
-          # --------------------------------------------------------------------------------- #
-          # tabItem Statistics
-          tabItem(
-              tabName = "Statistics",
-              titlePanel("Statistics"),
+            # --------------------------------------------------------------------------------- #
+            # tabItem Statistics
+            tabItem(
               
-              fluidPage(
-                  fluidRow(
-                      column(width = 3,
-                             selectInput(inputId = "StatisticsFilter_activity",
-                                         label = "Filter Row Activity", 
-                                         choices = activityList, 
-                                         selected = "all"),
+                tabName = "Statistics",
+                
+                titlePanel("Statistics"),
+              
+                fluidPage(
+                  
+                    fluidRow(
+                      
+                        column(width = 3,
+                               
+                            selectInput(inputId = "StatisticsFilter_activity",
+                                        label = "Filter Row Activity", 
+                                        choices = activityList, 
+                                        selected = "all"),
                              
-                             selectInput(inputId = "StatisticsBoxGraphCol",
-                                         label = "시각화 colunm 선택",
-                                         choices = StatisticsBoxGraphColList,
-                                         selected = "attitude.roll"),
+                            selectInput(inputId = "StatisticsBoxGraphCol",
+                                        label = "시각화 colunm 선택",
+                                        choices = StatisticsBoxGraphColList,
+                                        selected = "attitude.roll"),
                              
-                             radioButtons(inputId = 'StatisticsShowPlot',
+                            radioButtons(inputId = 'StatisticsShowPlot',
                                           label = '시각화 선택',
-                                          choices = c('All',
-                                                      'Show Scatter',
-                                                      'Show Box'),
+                                          choices = ShowPlotList,
                                           selected = 'All'),
 
-                             ),
-                      column(width = 7,
-                          fluidRow(
+                        ),
+                        
+                        column(width = 7,
+                               
+                            fluidRow(
+                            
                                 plotOutput(outputId = 'StatisticsBoxGraph', width = '945px')
-                          )
-                      ),
-                  ),
-                  fluidRow(
-                    DT::dataTableOutput('StatisticsData')
-                  ),
-              )
-          ),
-          
-          # tabItem Statistics end
-          # --------------------------------------------------------------------------------- #
-          
-          # --------------------------------------------------------------------------------- #
-          # tabItem Peak
-          tabItem(
-            tabName = "Peak",
-            titlePanel("Peak"),
-            fluidPage(
-              fluidRow(
-                column(width = 3,
-                       
-                       selectInput(inputId = "PeakFilter_activity",
-                                   label = "Filter Row Activity", 
-                                   choices = activityList, 
-                                   selected = "all"),
-                       
-                       selectInput(inputId = "PeakBoxGraphCol",
-                                   label = "시각화 colunm 선택",
-                                   choices = PeakBoxGraphColList,
-                                   selected = "attitude.roll"),
-                       
-                       radioButtons(inputId = 'PeakShowPlot',
-                                    label = '시각화 선택',
-                                    choices = c('All',
-                                                'Show Scatter',
-                                                'Show Box'),
-                                    selected = 'All'),
-                       ),
-                column(width = 7,
-                       fluidRow(
-                         plotOutput(outputId = 'PeakBoxGraph', width = '945px')
-                       )
+                            )
+                        ),
+                    ),
+                    
+                    fluidRow(
+                      
+                        DT::dataTableOutput('StatisticsData')
+                    ),
                 )
-              ),
-              fluidRow(
-                DT::dataTableOutput('PeakData')
-              ),
-            )
-          ),
-          # tabItem Peak End
-          # --------------------------------------------------------------------------------- #
+            ),
+            # tabItem Statistics end
+            # --------------------------------------------------------------------------------- #
           
-          
-          # --------------------------------------------------------------------------------- #
-          # tabItem Change Point
-          tabItem(
-            tabName = "Change_Point",
-            titlePanel("Change Point"),
-            fluidPage(
-              fluidRow(
-                column(width = 3,
+            # --------------------------------------------------------------------------------- #
+            # tabItem Peak
+            tabItem(
+              
+                tabName = "Peak",
+                
+                titlePanel("Peak"),
+                
+                fluidPage(
+                  
+                    fluidRow(
+                      
+                        column(width = 3,
                        
-                       selectInput(inputId = "ChangePointFilter_activity",
-                                   label = "Filter Row Activity", 
-                                   choices = activityList, 
-                                   selected = "all"),
+                        selectInput(inputId = "PeakFilter_activity",
+                                    label = "Filter Row Activity", 
+                                    choices = activityList, 
+                                    selected = "all"),
                        
-                       selectInput(inputId = "ChangePointBoxGraphCol",
-                                   label = "시각화 colunm 선택",
-                                   choices = ChangePointPeakBoxGraphColList,
-                                   selected = "attitude.roll"),
+                        selectInput(inputId = "PeakBoxGraphCol",
+                                    label = "시각화 colunm 선택",
+                                    choices = PeakBoxGraphColList,
+                                    selected = "attitude.roll"),
                        
-                       radioButtons(inputId = 'ChangePointShowPlot',
-                                    label = '시각화 선택',
-                                    choices = c('All',
-                                                'Show Scatter',
-                                                'Show Box'),
-                                    selected = 'All'),
-                ),
-                column(width = 7,
-                       fluidRow(
-                         plotOutput(outputId = 'ChangePointBoxGraph', width = '945px')
-                       )
+                        radioButtons(inputId = 'PeakShowPlot',
+                                     label = '시각화 선택',
+                                     choices = ,
+                                     selected = 'All'),
+                        ),
+                        
+                        column(width = 7,
+                               
+                            fluidRow(
+                                plotOutput(outputId = 'PeakBoxGraph', width = '945px')
+                            )
+                        )
+                    ),
+                    
+                    fluidRow(
+                      
+                        DT::dataTableOutput('PeakData')
+                    ),
                 )
-              ),
-              fluidRow(
-                DT::dataTableOutput('ChangePointData')
-              ),
-            )
-          ),
-          # tabItem Change Point End
-          # --------------------------------------------------------------------------------- #
+            ),
+            # tabItem Peak End
+            # --------------------------------------------------------------------------------- #
           
           
-          # --------------------------------------------------------------------------------- #
-          # tabItem SpectralAnalysis
-          tabItem(
-            tabName = "Spectral_Analysis",
-            titlePanel("Spectral Analysis"),
-            fluidPage(
-              fluidRow(
-                column(width = 3,
+            # --------------------------------------------------------------------------------- #
+            # tabItem Change Point
+            tabItem(
+              
+                tabName = "Change_Point",
+                
+                titlePanel("Change Point"),
+                
+                fluidPage(
+                  
+                    fluidRow(
+                      
+                        column(width = 3,
                        
-                       selectInput(inputId = "SpectralAnalysisFilter_activity",
-                                   label = "Filter Row Activity", 
-                                   choices = activityList, 
-                                   selected = "all"),
+                        selectInput(inputId = "ChangePointFilter_activity",
+                                    label = "Filter Row Activity", 
+                                    choices = activityList, 
+                                    selected = "all"),
                        
-                       selectInput(inputId = "SpectralAnalysisBoxGraphCol",
-                                   label = "시각화 colunm 선택",
-                                   choices = SpectralAnalysisBoxGraphColList,
-                                   selected = "attitude.roll"),
+                        selectInput(inputId = "ChangePointBoxGraphCol",
+                                    label = "시각화 colunm 선택",
+                                    choices = ChangePointPeakBoxGraphColList,
+                                    selected = "attitude.roll"),
                        
-                       radioButtons(inputId = 'SpectralAnalysisShowPlot',
-                                    label = '시각화 선택',
-                                    choices = c('All',
-                                                'Show Scatter',
-                                                'Show Box'),
-                                    selected = 'All'),
-                ),
-                column(width = 7,
-                       fluidRow(
-                         plotOutput(outputId = 'SpectralAnalysisBoxGraph', width = '945px')
-                       )
+                        radioButtons(inputId = 'ChangePointShowPlot',
+                                     label = '시각화 선택',
+                                     choices = ShowPlotList,
+                                     selected = 'All'),
+                        ),
+                        
+                        column(width = 7,
+                               
+                            fluidRow(
+                              
+                                plotOutput(outputId = 'ChangePointBoxGraph', width = '945px')
+                            )
+                        )
+                    ),
+                    
+                    fluidRow(
+                        DT::dataTableOutput('ChangePointData')
+                    ),
                 )
-              ),
-              fluidRow(
-                DT::dataTableOutput('SpectralAnalysisData')
-              ),
-            )
-          ),
-          # tabItem SpectralAnalysis End
-          # --------------------------------------------------------------------------------- #
+            ),
+            # tabItem Change Point End
+            # --------------------------------------------------------------------------------- #
           
-          # --------------------------------------------------------------------------------- #
-          # model
-          tabItem(
-            tabName = "Model",
-            titlePanel("Model"),
-            fluidPage(
-              fluidRow(
-                column(width = 3,
-                       div(style="margin-top:25px;",
-                       radioButtons(inputId = 'ChoiceData',
-                                    label = 'Data 선택',
-                                    choices = DataChoiceList,
-                                    selected = 'StatisticsData')),
+          
+            # --------------------------------------------------------------------------------- #
+            # tabItem SpectralAnalysis
+            tabItem(
+              
+                tabName = "Spectral_Analysis",
+                
+                titlePanel("Spectral Analysis"),
+                
+                fluidPage(
+                  
+                    fluidRow(
+                        
+                        column(width = 3,
                        
-                       verbatimTextOutput("value")
-                ),
-                column(width = 7,
-                       h3("RF Model"),
-                       div(style="width:850px;", verbatimTextOutput("modelPrint")),
+                        selectInput(inputId = "SpectralAnalysisFilter_activity",
+                                    label = "Filter Row Activity", 
+                                    choices = activityList, 
+                                    selected = "all"),
+                       
+                        selectInput(inputId = "SpectralAnalysisBoxGraphCol",
+                                    label = "시각화 colunm 선택",
+                                    choices = SpectralAnalysisBoxGraphColList,
+                                    selected = "attitude.roll"),
+                       
+                        radioButtons(inputId = 'SpectralAnalysisShowPlot',
+                                     label = '시각화 선택',
+                                     choices = ShowPlotList,
+                                     selected = 'All'),
+                        ),
+                        
+                        column(width = 7,
+                               
+                            fluidRow(
+                              
+                                plotOutput(outputId = 'SpectralAnalysisBoxGraph', width = '945px')
+                            )
+                        )
+                    ),
+                    
+                    fluidRow(
+                      
+                        DT::dataTableOutput('SpectralAnalysisData')
+                    ),
                 )
-              ),
-              fluidRow(DT::dataTableOutput('Data'))
-
+            ),
+            # tabItem SpectralAnalysis End
+            # --------------------------------------------------------------------------------- #
+            
+            
+            
+            # --------------------------------------------------------------------------------- #
+            # model
+            tabItem(
+              
+                tabName = "Model",
+                
+                titlePanel("Model"),
+                
+                fluidPage(
+                  
+                    fluidRow(
+                      
+                        column(width = 3,
+                           
+                            div(style="margin-top:25px;",
+                                radioButtons(inputId = 'ChoiceData',
+                                             label = 'Data 선택',
+                                             choices = DataChoiceList,
+                                             selected = 'StatisticsData')),
+                       
+                            verbatimTextOutput("value")
+                        ),
+                        column(width = 7,
+                           
+                            h3("RF Model"),
+                        
+                            div(style="width:850px;", verbatimTextOutput("modelPrint")),
+                        )
+                    ),
+                
+                    fluidRow(
+                        DT::dataTableOutput('Data')
+                    )
+                )
             )
-          )
-          # --------------------------------------------------------------------------------- #
-          
-
-
-      )
-  )
-  
+            # model End
+            # --------------------------------------------------------------------------------- #
+        )
+    )
 )
 
 
