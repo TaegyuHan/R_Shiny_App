@@ -1,8 +1,5 @@
 # R Shiny App 개발하기
 
----
-
----
 
 비정형데이터 분석 프로젝트 Shiny App만들기 입니다.
 
@@ -12,7 +9,7 @@
 
 앱을 사용하기 전에 라이브러리를 다운받아야 합니다.
 
-```python
+```R
 # install.packages("shiny")
 # install.packages("shinydashboard")
 # install.packages("tidyverse")
@@ -35,7 +32,7 @@ library(changepoint)
 
 APP의 구조도 입니다.
 
-```python
+```text
 R_Shiny_App
  │  app.R
  │  .RData
@@ -47,7 +44,7 @@ R_Shiny_App
 
 # App 사용하기
 
-```r
+```R
 setwd("현재 APP의 경로")
 
 # 사용할 Data를 받습니다.
