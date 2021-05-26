@@ -5,6 +5,9 @@
 
 목적 : 휴대전화 센서데이터의 Data를 가지고 App을 만들기
 
+# APP 확인하기
+[App 확인 클릭](https://taegyuhan.shinyapps.io/myapp/)
+
 # 사용한 library
 
 앱을 사용하기 전에 라이브러리를 다운받아야 합니다.
@@ -70,6 +73,7 @@ App의 화면구성은 사이드바와 메인 화면으로 구성 됩니다.
     - Peak : 피크 전처리
     - Change Point : 변환점 전처리
     - Spectral Analysis : 주파수분석 전처리
+- Model : RF 알고리즘을 이용해서 모델링을 합니다.
 
 # Data
 
