@@ -1,15 +1,13 @@
-#------------------------------------------------------------------#
-# 
-# 순천향 대학교 비정형데이터 과제
-# 빅데이터 공학과 20171483 한태규
-# Shiny App 개발하기
-# 
-#------------------------------------------------------------------#
 
-
-
-#------------------------------------------------------------------#
-# 시각화 함수
+library(changepoint)
+library(shiny)
+library(shinydashboard)
+library(tidyverse)
+library(DT)
+library(pracma)
+library(seewave)
+library(changepoint)
+library(RWeka)
 
 ShowGraph <- function(data, filter, showPlot, showCol)
 {
@@ -110,7 +108,7 @@ server <- function(input, output) {
     output$verb <- renderText({ paste0(input$state,"/",input$experimenter,".csv") })
     
     
-    # Data ?????????
+    # Data 
     output$sensorData = DT::renderDataTable({
         get(paste0(input$state,"/",input$experimenter,".csv"))
     },
@@ -128,7 +126,7 @@ server <- function(input, output) {
                 xlab("Time") +
                 ylab(input$dataGraphCol)
         }
-        else { # Point 그래프 같이 보이기
+        else { 
             ggplot(get(paste0(input$state,"/",input$experimenter,".csv")),
                    aes(x = X, y = get(input$dataGraphCol) )) + 
               geom_line(color="#605CA8", size = 1) +
@@ -313,4 +311,5 @@ server <- function(input, output) {
     })
     
     # --------------------------------------------------------------------------------- #
+    
 }

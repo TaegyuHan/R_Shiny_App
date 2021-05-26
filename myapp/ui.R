@@ -1,14 +1,13 @@
-#------------------------------------------------------------------#
-# 
-# 순천향 대학교 비정형데이터 과제
-# 빅데이터 공학과 20171483 한태규
-# Shiny App 개발하기
-# 
-#------------------------------------------------------------------#
 
-
-
-
+library(changepoint)
+library(shiny)
+library(shinydashboard)
+library(tidyverse)
+library(DT)
+library(pracma)
+library(seewave)
+library(changepoint)
+library(RWeka)
 
 #------------------------------------------------------------------#
 # select list
@@ -125,8 +124,6 @@ ChangePointPeakBoxGraphColList <- list(  "cp_magrotationRate_mean"
                                        , "cp_magrotationRate_meanvar"
                                        , "cp_maguserAcceleration_meanvar")
 
-
-
 SpectralAnalysisBoxGraphColList <- list(   "V2", "V3", 
                                           "V4", "V5", "V6", 
                                           "V7", "V8", "V9", 
@@ -153,7 +150,7 @@ ShowPlotList <- c('All',
 
 ui <- dashboardPage(
     
-    # 스킨
+  
     skin = "purple",
     
     
@@ -202,7 +199,7 @@ ui <- dashboardPage(
               
                 fluidPage(
                 
-                    titlePanel("데이터 확인"),
+                    titlePanel("Data Check"),
                 
                     fluidRow(
                       
@@ -211,17 +208,17 @@ ui <- dashboardPage(
                             width = 3,
                             
                             selectInput(inputId = "state",
-                                        label = "데이터 범주",
+                                        label = "Data Categories",
                                         choices = stateList, 
                                         selected = "dws_1"),
                            
                             selectInput(inputId = "experimenter",
-                                        label = "실험자", 
+                                        label = "experimenter", 
                                         choices = experimenterList, 
                                         selected = "sub_1"),
 
                             selectInput(inputId = "dataGraphCol",
-                                        label = "시각화 colunm 선택",
+                                        label = "Select visualization colunm",
                                         choices = dataGraphColList,
                                         selected = "attitude.roll"),
                            
@@ -272,12 +269,12 @@ ui <- dashboardPage(
                                         selected = "all"),
                              
                             selectInput(inputId = "StatisticsBoxGraphCol",
-                                        label = "시각화 colunm 선택",
+                                        label = "Select visualization colunm",
                                         choices = StatisticsBoxGraphColList,
                                         selected = "attitude.roll"),
                              
                             radioButtons(inputId = 'StatisticsShowPlot',
-                                          label = '시각화 선택',
+                                          label = 'Select visualization',
                                           choices = ShowPlotList,
                                           selected = 'All'),
 
@@ -324,12 +321,12 @@ ui <- dashboardPage(
                                     selected = "all"),
                        
                         selectInput(inputId = "PeakBoxGraphCol",
-                                    label = "시각화 colunm 선택",
+                                    label = "Select visualization colunm",
                                     choices = PeakBoxGraphColList,
                                     selected = "attitude.roll"),
                        
                         radioButtons(inputId = 'PeakShowPlot',
-                                     label = '시각화 선택',
+                                     label = 'Select visualization',
                                      choices = ShowPlotList,
                                      selected = 'All'),
                         ),
@@ -374,12 +371,12 @@ ui <- dashboardPage(
                                     selected = "all"),
                        
                         selectInput(inputId = "ChangePointBoxGraphCol",
-                                    label = "시각화 colunm 선택",
+                                    label = "Select visualization colunm",
                                     choices = ChangePointPeakBoxGraphColList,
                                     selected = "attitude.roll"),
                        
                         radioButtons(inputId = 'ChangePointShowPlot',
-                                     label = '시각화 선택',
+                                     label = 'Select visualization',
                                      choices = ShowPlotList,
                                      selected = 'All'),
                         ),
@@ -424,12 +421,12 @@ ui <- dashboardPage(
                                     selected = "all"),
                        
                         selectInput(inputId = "SpectralAnalysisBoxGraphCol",
-                                    label = "시각화 colunm 선택",
+                                    label = "Select visualization colunm",
                                     choices = SpectralAnalysisBoxGraphColList,
                                     selected = "attitude.roll"),
                        
                         radioButtons(inputId = 'SpectralAnalysisShowPlot',
-                                     label = '시각화 선택',
+                                     label = 'Select visualization',
                                      choices = ShowPlotList,
                                      selected = 'All'),
                         ),
@@ -471,7 +468,7 @@ ui <- dashboardPage(
                            
                             div(style="margin-top:25px;",
                                 radioButtons(inputId = 'ChoiceData',
-                                             label = 'Data 선택',
+                                             label = 'Data Select',
                                              choices = DataChoiceList,
                                              selected = 'StatisticsData')),
                        
