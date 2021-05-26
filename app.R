@@ -6,6 +6,7 @@
 # Han Tae Gyu
 #
 # link : https://taegyuhan.shinyapps.io/myapp/
+# github : https://github.com/TaegyuHan/R_Shiny_App
 #------------------------------------------------------------------#
 
 #------------------------------------------------------------------#
