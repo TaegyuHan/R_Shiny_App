@@ -29,7 +29,7 @@ library(RWeka)
 
 #------------------------------------------------------------------#
 # Run app
-setwd("C:/shinyApp/R_Shiny_App")
+setwd("C:/shinyApp/R_Shiny_App_homework")
 
 load( "./myapp/.RData" )
 
