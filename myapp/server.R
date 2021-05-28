@@ -9,69 +9,70 @@ library(seewave)
 library(changepoint)
 library(RWeka)
 
+
 ShowGraph <- function(data, filter, showPlot, showCol)
 {
   
-    DataColorList <- c("#F9D541", "#605CA8", "#605CA8",
-                       "#605CA8", "#605CA8", "#605CA8")
-    
-    if (filter == "all") {
-        DataColorList[1:6] = "#F9D541"
-    }
-    else if (filter == 'dws') {
-        DataColorList[1:6] = "#605CA8"
-        DataColorList[1] = "#F9D541"
-    } 
-    else if (filter == 'jog') {
-        DataColorList[1:6] = "#605CA8"
-        DataColorList[2] = "#F9D541"
-    } 
-    else if (filter == 'sit') {
-        DataColorList[1:6] = "#605CA8"
-        DataColorList[3] = "#F9D541"
-    } 
-    else if (filter == 'std') {
-        DataColorList[1:6] = "#605CA8"
-        DataColorList[4] = "#F9D541"
-    } 
-    else if (filter == 'ups') {
-        DataColorList[1:6] = "#605CA8"
-        DataColorList[5] = "#F9D541"
-    } 
-    else if (filter == 'wlk') {
-        DataColorList[1:6] = "#605CA8"
-        DataColorList[6] = "#F9D541"
-    }
-    
-    
-    if(showPlot == 'All') {
-        showPlot <- data %>% 
-            ggplot() + 
-            theme_minimal() + 
-            geom_boxplot(aes(x=activity , y=get(showCol), fill=activity)) +
-            geom_point(aes(x=activity , y=get(showCol), colour=activity)) + 
-            scale_fill_manual(values=DataColorList) + 
-            scale_color_manual(values=DataColorList) + 
-            theme(axis.text.y=element_blank())
-    }
-    else if(showPlot == 'Show Scatter') {
-        showPlot <- data %>% 
-            ggplot() + 
-            theme_minimal() + 
-            geom_point(aes(x=activity , y=get(showCol), colour=activity)) + 
-            scale_color_manual(values=DataColorList) + 
-            theme(axis.text.y=element_blank())
-    }
-    else if(showPlot == 'Show Box') {
-        showPlot <- data %>% 
-            ggplot() + 
-            theme_minimal() + 
-            geom_boxplot(aes(x=activity , y=get(showCol), fill=activity)) +
-            scale_fill_manual(values=DataColorList) + 
-            theme(axis.text.y=element_blank())
-    }
-    
-    return(showPlot)
+  DataColorList <- c("#F9D541", "#605CA8", "#605CA8",
+                     "#605CA8", "#605CA8", "#605CA8")
+  
+  if (filter == "all") {
+    DataColorList[1:6] = "#F9D541"
+  }
+  else if (filter == 'dws') {
+    DataColorList[1:6] = "#605CA8"
+    DataColorList[1] = "#F9D541"
+  } 
+  else if (filter == 'jog') {
+    DataColorList[1:6] = "#605CA8"
+    DataColorList[2] = "#F9D541"
+  } 
+  else if (filter == 'sit') {
+    DataColorList[1:6] = "#605CA8"
+    DataColorList[3] = "#F9D541"
+  } 
+  else if (filter == 'std') {
+    DataColorList[1:6] = "#605CA8"
+    DataColorList[4] = "#F9D541"
+  } 
+  else if (filter == 'ups') {
+    DataColorList[1:6] = "#605CA8"
+    DataColorList[5] = "#F9D541"
+  } 
+  else if (filter == 'wlk') {
+    DataColorList[1:6] = "#605CA8"
+    DataColorList[6] = "#F9D541"
+  }
+  
+  
+  if(showPlot == 'All') {
+    showPlot <- data %>% 
+      ggplot() + 
+      theme_minimal() + 
+      geom_boxplot(aes(x=activity , y=get(showCol), fill=activity)) +
+      geom_point(aes(x=activity , y=get(showCol), colour=activity)) + 
+      scale_fill_manual(values=DataColorList) + 
+      scale_color_manual(values=DataColorList) + 
+      theme(axis.text.y=element_blank())
+  }
+  else if(showPlot == 'Show Scatter') {
+    showPlot <- data %>% 
+      ggplot() + 
+      theme_minimal() + 
+      geom_point(aes(x=activity , y=get(showCol), colour=activity)) + 
+      scale_color_manual(values=DataColorList) + 
+      theme(axis.text.y=element_blank())
+  }
+  else if(showPlot == 'Show Box') {
+    showPlot <- data %>% 
+      ggplot() + 
+      theme_minimal() + 
+      geom_boxplot(aes(x=activity , y=get(showCol), fill=activity)) +
+      scale_fill_manual(values=DataColorList) + 
+      theme(axis.text.y=element_blank())
+  }
+  
+  return(showPlot)
 }
 #------------------------------------------------------------------#
 
@@ -83,19 +84,18 @@ ShowGraph <- function(data, filter, showPlot, showCol)
 showModel <- function(data)
 {
   
-    RF <- make_Weka_classifier("weka/classifiers/trees/RandomForest")
-    
-    m <- RF(as.factor(activity)~., data)
-    
-    e <- evaluate_Weka_classifier( m
-                                   , numFolds = 10
-                                   , complexity = TRUE
-                                   , class = TRUE )
-    
-    return(e)
+  RF <- make_Weka_classifier("weka/classifiers/trees/RandomForest")
+  
+  m <- RF(as.factor(activity)~., data)
+  
+  e <- evaluate_Weka_classifier( m
+                                 , numFolds = 10
+                                 , complexity = TRUE
+                                 , class = TRUE )
+  
+  return(e)
 }
 #------------------------------------------------------------------#
-
 
 
 

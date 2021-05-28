@@ -153,9 +153,7 @@ ui <- dashboardPage(
   
     skin = "purple",
     
-    
-    
-    
+
     # Header
     dashboardHeader(title = "Shiny App Dev"),
     
@@ -190,7 +188,7 @@ ui <- dashboardPage(
     dashboardBody(
       
         tabItems(
-          
+            
             # --------------------------------------------------------------------------------- #
             # tabItem Data
             tabItem(
@@ -207,31 +205,38 @@ ui <- dashboardPage(
                           
                             width = 3,
                             
-                            selectInput(inputId = "state",
-                                        label = "Data Categories",
-                                        choices = stateList, 
-                                        selected = "dws_1"),
-                           
-                            selectInput(inputId = "experimenter",
-                                        label = "experimenter", 
-                                        choices = experimenterList, 
-                                        selected = "sub_1"),
-
-                            selectInput(inputId = "dataGraphCol",
-                                        label = "Select visualization colunm",
-                                        choices = dataGraphColList,
-                                        selected = "attitude.roll"),
-                           
-                            checkboxInput("somevalue", "Show Point", FALSE),
-                           
-                            verbatimTextOutput("verb"),
+                            box(
+                              
+                              width = 12,
+                              
+                              title = "Data Choice",
+                              
+                              selectInput(inputId = "state",
+                                          label = "Data Categories",
+                                          choices = stateList, 
+                                          selected = "dws_1"),
+                              
+                              selectInput(inputId = "experimenter",
+                                          label = "experimenter", 
+                                          choices = experimenterList, 
+                                          selected = "sub_1"),
+                              
+                              selectInput(inputId = "dataGraphCol",
+                                          label = "Select visualization colunm",
+                                          choices = dataGraphColList,
+                                          selected = "attitude.roll"),
+                              
+                              checkboxInput("somevalue", "Show Point", FALSE),
+                              
+                              verbatimTextOutput("verb")
+                            )
                         ),
                            
                         column(width =7,
                                
                            fluidRow(
                              
-                               plotOutput(outputId = 'dataLineGraph', width = '945px')
+                               plotOutput(outputId = 'dataLineGraph', width = '1230px')
                                
                             ),
                         )
@@ -261,30 +266,37 @@ ui <- dashboardPage(
                   
                     fluidRow(
                       
-                        column(width = 3,
+                        column(
+                          
+                            width = 3,
+                              
+                            box(
+                              
+                              width = 12,
+                             
+                              selectInput(inputId = "StatisticsFilter_activity",
+                                          label = "Filter Row Activity", 
+                                          choices = activityList, 
+                                          selected = "all"),
+                              
+                              selectInput(inputId = "StatisticsBoxGraphCol",
+                                          label = "Select visualization colunm",
+                                          choices = StatisticsBoxGraphColList,
+                                          selected = "attitude.roll"),
+                              
+                              radioButtons(inputId = 'StatisticsShowPlot',
+                                           label = 'Select visualization',
+                                           choices = ShowPlotList,
+                                           selected = 'All')
                                
-                            selectInput(inputId = "StatisticsFilter_activity",
-                                        label = "Filter Row Activity", 
-                                        choices = activityList, 
-                                        selected = "all"),
-                             
-                            selectInput(inputId = "StatisticsBoxGraphCol",
-                                        label = "Select visualization colunm",
-                                        choices = StatisticsBoxGraphColList,
-                                        selected = "attitude.roll"),
-                             
-                            radioButtons(inputId = 'StatisticsShowPlot',
-                                          label = 'Select visualization',
-                                          choices = ShowPlotList,
-                                          selected = 'All'),
-
+                            )
                         ),
                         
                         column(width = 7,
                                
                             fluidRow(
                             
-                                plotOutput(outputId = 'StatisticsBoxGraph', width = '945px')
+                                plotOutput(outputId = 'StatisticsBoxGraph', width = '1230px')
                             )
                         ),
                     ),
@@ -314,27 +326,34 @@ ui <- dashboardPage(
                     fluidRow(
                       
                         column(width = 3,
-                       
-                        selectInput(inputId = "PeakFilter_activity",
-                                    label = "Filter Row Activity", 
-                                    choices = activityList, 
-                                    selected = "all"),
-                       
-                        selectInput(inputId = "PeakBoxGraphCol",
-                                    label = "Select visualization colunm",
-                                    choices = PeakBoxGraphColList,
-                                    selected = "attitude.roll"),
-                       
-                        radioButtons(inputId = 'PeakShowPlot',
-                                     label = 'Select visualization',
-                                     choices = ShowPlotList,
-                                     selected = 'All'),
+                               
+                            box(
+                               
+                                width = 12,
+                               
+                                selectInput(inputId = "PeakFilter_activity",
+                                            label = "Filter Row Activity", 
+                                            choices = activityList, 
+                                            selected = "all"),
+                               
+                                selectInput(inputId = "PeakBoxGraphCol",
+                                            label = "Select visualization colunm",
+                                            choices = PeakBoxGraphColList,
+                                            selected = "attitude.roll"),
+                               
+                                radioButtons(inputId = 'PeakShowPlot',
+                                             label = 'Select visualization',
+                                             choices = ShowPlotList,
+                                             selected = 'All'),
+                            
+                            )
                         ),
+                        
                         
                         column(width = 7,
                                
                             fluidRow(
-                                plotOutput(outputId = 'PeakBoxGraph', width = '945px')
+                                plotOutput(outputId = 'PeakBoxGraph', width = '1230px')
                             )
                         )
                     ),
@@ -364,28 +383,31 @@ ui <- dashboardPage(
                     fluidRow(
                       
                         column(width = 3,
-                       
-                        selectInput(inputId = "ChangePointFilter_activity",
-                                    label = "Filter Row Activity", 
-                                    choices = activityList, 
-                                    selected = "all"),
-                       
-                        selectInput(inputId = "ChangePointBoxGraphCol",
-                                    label = "Select visualization colunm",
-                                    choices = ChangePointPeakBoxGraphColList,
-                                    selected = "attitude.roll"),
-                       
-                        radioButtons(inputId = 'ChangePointShowPlot',
-                                     label = 'Select visualization',
-                                     choices = ShowPlotList,
-                                     selected = 'All'),
+                               
+                              box(width = 12,
+                                  
+                                  selectInput(inputId = "ChangePointFilter_activity",
+                                              label = "Filter Row Activity", 
+                                              choices = activityList, 
+                                              selected = "all"),
+                                  
+                                  selectInput(inputId = "ChangePointBoxGraphCol",
+                                              label = "Select visualization colunm",
+                                              choices = ChangePointPeakBoxGraphColList,
+                                              selected = "attitude.roll"),
+                                  
+                                  radioButtons(inputId = 'ChangePointShowPlot',
+                                               label = 'Select visualization',
+                                               choices = ShowPlotList,
+                                               selected = 'All')
+                              )
                         ),
                         
                         column(width = 7,
                                
                             fluidRow(
                               
-                                plotOutput(outputId = 'ChangePointBoxGraph', width = '945px')
+                                plotOutput(outputId = 'ChangePointBoxGraph', width = '1230px')
                             )
                         )
                     ),
@@ -415,27 +437,33 @@ ui <- dashboardPage(
                         
                         column(width = 3,
                        
-                        selectInput(inputId = "SpectralAnalysisFilter_activity",
-                                    label = "Filter Row Activity", 
-                                    choices = activityList, 
-                                    selected = "all"),
-                       
-                        selectInput(inputId = "SpectralAnalysisBoxGraphCol",
-                                    label = "Select visualization colunm",
-                                    choices = SpectralAnalysisBoxGraphColList,
-                                    selected = "attitude.roll"),
-                       
-                        radioButtons(inputId = 'SpectralAnalysisShowPlot',
-                                     label = 'Select visualization',
-                                     choices = ShowPlotList,
-                                     selected = 'All'),
+                            box(
+                                width = 12,
+                              
+                                 
+                                selectInput(inputId = "SpectralAnalysisFilter_activity",
+                                            label = "Filter Row Activity", 
+                                            choices = activityList, 
+                                            selected = "all"),
+                               
+                                selectInput(inputId = "SpectralAnalysisBoxGraphCol",
+                                            label = "Select visualization colunm",
+                                            choices = SpectralAnalysisBoxGraphColList,
+                                            selected = "attitude.roll"),
+                               
+                                radioButtons(inputId = 'SpectralAnalysisShowPlot',
+                                             label = 'Select visualization',
+                                             choices = ShowPlotList,
+                                             selected = 'All'),
+                            )
+                            
                         ),
                         
                         column(width = 7,
                                
                             fluidRow(
                               
-                                plotOutput(outputId = 'SpectralAnalysisBoxGraph', width = '945px')
+                                plotOutput(outputId = 'SpectralAnalysisBoxGraph', width = '1230px')
                             )
                         )
                     ),
@@ -466,13 +494,18 @@ ui <- dashboardPage(
                       
                         column(width = 3,
                            
-                            div(style="margin-top:25px;",
+                            box(
+                              
+                               width = 12,
+                             
                                 radioButtons(inputId = 'ChoiceData',
                                              label = 'Data Select',
                                              choices = DataChoiceList,
-                                             selected = 'StatisticsData')),
-                       
-                            verbatimTextOutput("value")
+                                             selected = 'StatisticsData'),
+                                
+                                verbatimTextOutput("value") 
+                               
+                            )
                         ),
                         column(width = 7,
                            
